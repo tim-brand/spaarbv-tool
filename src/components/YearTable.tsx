@@ -19,6 +19,8 @@ export function YearTable({ inputs, stelsel }: Props) {
       ? 0
       : laatsteBv.netto - laatsteB3.netto;
 
+  const toonInleg = inputs.inleg > 0;
+
   return (
     <div className="card">
       <p className="card-title">
@@ -38,13 +40,14 @@ export function YearTable({ inputs, stelsel }: Props) {
         <table>
           <thead>
             <tr>
-              <th />
+              <th colSpan={toonInleg ? 2 : 1} />
               <th className="g-b3" colSpan={4}>Beleggen in privé</th>
               <th className="g-bv" colSpan={6}>Beleggen in de BV</th>
               <th />
             </tr>
             <tr>
               <th>Jaar</th>
+              {toonInleg && <th>Inleg</th>}
               <th className="g-b3">Begin jaar</th>
               <th className="g-b3">Rendement</th>
               <th className="g-b3">
@@ -68,6 +71,7 @@ export function YearTable({ inputs, stelsel }: Props) {
               return (
                 <tr key={i}>
                   <td className="jaar">{i + 1}</td>
+                  {toonInleg && <td className="c-inleg">{eur(rij.inleg)}</td>}
                   <td className="c-b3">{eur(rij.begin)}</td>
                   <td className="c-b3">{eur(rij.rend)}</td>
                   <td className="c-b3">{eur(rij.tax)}</td>

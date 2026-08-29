@@ -55,4 +55,23 @@ describe("YearTable", () => {
     expect(document.querySelectorAll("td.pos").length).toBeGreaterThan(0);
     expect(document.querySelectorAll("td.negv").length).toBeGreaterThan(0);
   });
+
+  it("toont geen inlegkolom zonder inleg", () => {
+    tabel();
+    expect(screen.queryByText("Inleg")).toBeNull();
+  });
+
+  it("toont de gestorte hoofdsom per jaar bij een inleg", () => {
+    tabel({ inleg: 500, inlegJaren: 20 });
+    expect(screen.getByText("Inleg")).toBeDefined();
+    expect(screen.getAllByText(/6\.000/).length).toBeGreaterThan(0);
+  });
+
+  it("toont nul in de inlegkolom na het stopjaar", () => {
+    tabel({ inleg: 500, inlegJaren: 2 });
+    const cellen = document.querySelectorAll("td.c-inleg");
+    expect(cellen).toHaveLength(20);
+    expect(cellen[1]?.textContent).toContain("6.000");
+    expect(cellen[2]?.textContent).toContain("0");
+  });
 });
