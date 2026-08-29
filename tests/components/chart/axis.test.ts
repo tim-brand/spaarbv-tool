@@ -38,4 +38,9 @@ describe("yTicks", () => {
       expect(t).toBeLessThanOrEqual(70_000);
     }
   });
+
+  it("past de stap aan als minder dan vier lijnen nodig zijn (retry loop)", () => {
+    const ticks = yTicks(0, 146_192);
+    expect(ticks.length).toBeGreaterThanOrEqual(4);
+  });
 });
