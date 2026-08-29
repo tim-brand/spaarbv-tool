@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { DEFAULTS, toInputs, type FormState } from "./state";
 import { breakevenBands } from "./model/compare";
+import { BreakevenChart } from "./components/BreakevenChart";
 import { Inputs as InputsPanel } from "./components/Inputs";
 import { Verdict } from "./components/Verdict";
 import { WhyFold } from "./components/WhyFold";
@@ -39,8 +40,9 @@ export default function App() {
         <div>
           <Verdict inputs={inputs} stelsel={form.stelsel} bands={bands} />
           <WhyFold inputs={inputs} stelsel={form.stelsel} bands={bands} />
+          <BreakevenChart inputs={inputs} stelsel={form.stelsel} bands={bands} />
           <YearTable inputs={inputs} stelsel={form.stelsel} />
-          {/* Tasks 12-14 */}
+          {/* Task 14 */}
         </div>
       </div>
       <button type="button" onClick={() => setForm(DEFAULTS)}>
