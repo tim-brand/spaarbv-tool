@@ -35,6 +35,8 @@ export interface Inputs {
 export interface Box3Year {
   /** Vermogen aan het begin van het jaar. */
   begin: number;
+  /** Gestorte hoofdsom van dat jaar (12 × maandinleg), 0 buiten de inlegperiode. */
+  inleg: number;
   /** Resultaat over dat jaar. */
   rend: number;
   /** Box 3-heffing, betaald uit het vermogen zelf. */
