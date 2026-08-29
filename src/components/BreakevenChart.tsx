@@ -2,7 +2,7 @@ import { useIsNarrow } from "../hooks/useIsNarrow";
 import { V_MAX, V_MIN, delta } from "../model/compare";
 import { kort } from "../model/format";
 import type { Band, Inputs, Stelsel } from "../model/types";
-import { Label } from "./chart/Label";
+import { Label, labelBreedte } from "./chart/Label";
 import { yTicks } from "./chart/axis";
 
 interface Props {
@@ -12,12 +12,16 @@ interface Props {
 }
 
 const N = 70;
-const W = 720;
 const X_TICKS = [25_000, 50_000, 100_000, 200_000, 500_000, 1_000_000, 2_000_000, 5_000_000];
 const X_TICKS_SMAL = [25_000, 100_000, 500_000, 2_000_000];
 
 export function BreakevenChart({ inputs, stelsel, bands }: Props) {
   const smal = useIsNarrow();
+  // Op smalle schermen krimpt de viewBox mee, zodat de grotere astekst (zie
+  // styles.css) ook echt groter uitpakt: bij een vaste W=720 werd de SVG op
+  // een smal kaartje zo ver teruggeschaald dat de tekst juist kleiner oogde
+  // dan op desktop, ondanks de hogere font-size in viewBox-eenheden.
+  const W = smal ? 380 : 720;
   const H = smal ? 400 : 340;
   const M = smal
     ? { t: 34, r: 20, b: 66, l: 92 }
@@ -83,12 +87,17 @@ export function BreakevenChart({ inputs, stelsel, bands }: Props) {
   const toonStip = inputs.V >= lo && inputs.V <= hi;
   const stipX = X(inputs.V);
   const stipY = Y(eigenDelta);
+  const jijTekst =
+    eigenDelta >= 0
+      ? `jij: ${kort(eigenDelta)} voor de BV`
+      : `jij: ${kort(-eigenDelta)} voor box 3`;
+  // Op smal scherm ankerpunt op basis van de geschatte breedte van het label
+  // zelf: bij de smallere viewBox (zie W hierboven) klopt "190 pixels vrije
+  // ruimte" niet meer. Desktop (hieronder) blijft de oude vaste drempel
+  // gebruiken.
+  const jijHalf = smal ? labelBreedte(jijTekst, true) / 2 : 110;
   const stipAnchor: "start" | "middle" | "end" =
-    stipX > W - M.r - (smal ? 190 : 110)
-      ? "end"
-      : stipX < M.l + (smal ? 190 : 110)
-        ? "start"
-        : "middle";
+    stipX + jijHalf > x1 ? "end" : stipX - jijHalf < x0 ? "start" : "middle";
 
   const eersteWaarde = ptsA[0]?.[1] ?? 0;
 
@@ -120,8 +129,16 @@ export function BreakevenChart({ inputs, stelsel, bands }: Props) {
 
         <line x1={x0} x2={x1} y1={y0} y2={y0} className="zl" />
         <text x={x0 - 9} y={y0 + 3.5} className="ax" textAnchor="end">€0</text>
-        <Label x={x0 + 6} y={y0 - 7} text="↑ hier houd je meer over via de BV" color="#8a6708" narrow={smal} />
-        <Label x={x0 + 6} y={y0 + 16} text="↓ hier houd je meer over in box 3" color="#2f6f8f" narrow={smal} />
+        <Label
+          x={x0 + 6} y={y0 - (smal ? 11 : 7)}
+          text={smal ? "↑ meer via de BV" : "↑ hier houd je meer over via de BV"}
+          color="#8a6708" narrow={smal}
+        />
+        <Label
+          x={x0 + 6} y={y0 + (smal ? 24 : 16)}
+          text={smal ? "↓ meer in box 3" : "↓ hier houd je meer over in box 3"}
+          color="#2f6f8f" narrow={smal}
+        />
 
         {labelTicks.map((t) => (
           <text key={t} x={X(t)} y={H - M.b + (smal ? 24 : 16)} className="ax" textAnchor="middle">
@@ -152,22 +169,28 @@ export function BreakevenChart({ inputs, stelsel, bands }: Props) {
           )
         )}
 
-        {band !== undefined && band.from >= lo && band.from <= hi && (
-          <>
-            <path
-              d={`M ${X(band.from)} ${M.t} L ${X(band.from)} ${H - M.b}`}
-              fill="none" stroke="#6f3ea8" strokeWidth={1.5} strokeDasharray="4 3"
-            />
-            <Label
-              x={X(band.from) + (X(band.from) < W - M.r - (smal ? 250 : 150) ? 7 : -7)}
-              y={M.t - (smal ? 10 : 0) + 2}
-              text={`kantelpunt ${kort(band.from)}`}
-              color="#6f3ea8"
-              anchor={X(band.from) < W - M.r - (smal ? 250 : 150) ? "start" : "end"}
-              narrow={smal}
-            />
-          </>
-        )}
+        {band !== undefined && band.from >= lo && band.from <= hi && (() => {
+          const kantelTekst = `kantelpunt ${kort(band.from)}`;
+          const kantelRechts = smal
+            ? X(band.from) + 7 + labelBreedte(kantelTekst, true) <= x1
+            : X(band.from) < x1 - 150;
+          return (
+            <>
+              <path
+                d={`M ${X(band.from)} ${M.t} L ${X(band.from)} ${H - M.b}`}
+                fill="none" stroke="#6f3ea8" strokeWidth={1.5} strokeDasharray="4 3"
+              />
+              <Label
+                x={X(band.from) + (kantelRechts ? 7 : -7)}
+                y={M.t - (smal ? 10 : 0) + 2}
+                text={kantelTekst}
+                color="#6f3ea8"
+                anchor={kantelRechts ? "start" : "end"}
+                narrow={smal}
+              />
+            </>
+          );
+        })()}
 
         {band?.to != null && band.to <= hi && (
           <>
@@ -183,12 +206,8 @@ export function BreakevenChart({ inputs, stelsel, bands }: Props) {
           <>
             <circle cx={stipX} cy={stipY} r={5} fill="#161a20" />
             <Label
-              x={stipX} y={stipY + (eigenDelta >= 0 ? -14 : 26)}
-              text={
-                eigenDelta >= 0
-                  ? `jij: ${kort(eigenDelta)} voor de BV`
-                  : `jij: ${kort(-eigenDelta)} voor box 3`
-              }
+              x={stipX} y={stipY + (eigenDelta >= 0 ? (smal ? -20 : -14) : (smal ? 34 : 26))}
+              text={jijTekst}
               color="#161a20" anchor={stipAnchor} narrow={smal}
             />
           </>
