@@ -1,0 +1,7 @@
+node_modules
+dist
+.DS_Store
+*.local
+
+# de spec en het plan horen wél in de repo
+!docs/superpowers/
