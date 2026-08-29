@@ -37,10 +37,15 @@ export function Inputs({ form, onChange, liqHint }: Props) {
     onChange({ ...form, soort, rendPct: defaultRendement(soort) });
   };
 
-  const netjes = (key: "kostenText" | "oprichtText", fallback: number): void => {
+  const netjes = (
+    key: "kostenText" | "oprichtText" | "inlegText",
+    fallback: number,
+  ): void => {
     const n = parseNum(form[key], fallback, MAX_BEDRAG);
     onChange({ ...form, [key]: formatNumberNl(n) });
   };
+
+  const inleg = parseNum(form.inlegText, 0, MAX_BEDRAG);
 
   return (
     <>
@@ -79,6 +84,42 @@ export function Inputs({ form, onChange, liqHint }: Props) {
           />
           <p className="hint">Wat je nu in box 3 hebt staan.</p>
         </div>
+
+        <div className="field">
+          <label htmlFor="k-inleg">Maandelijkse inleg</label>
+          <div className="in-wrap">
+            <span>€</span>
+            <input
+              type="text" id="k-inleg" inputMode="numeric" value={form.inlegText}
+              onChange={(e) => set("inlegText", e.target.value)}
+              onBlur={() => netjes("inlegText", 0)}
+            />
+          </div>
+          <p className="hint">
+            Wat je er elke maand bijlegt, aan het begin van de maand. Laat op 0
+            staan als je alleen met je huidige vermogen rekent.
+          </p>
+        </div>
+
+        {inleg > 0 && (
+          <div className="field">
+            <label htmlFor="k-inlegjaren">
+              Inleggen gedurende{" "}
+              <span className="val">
+                {form.inlegJaren ?? form.T} van de {form.T} jaar
+              </span>
+            </label>
+            <input
+              type="range" id="k-inlegjaren" min={1} max={form.T} step={1}
+              value={form.inlegJaren ?? form.T}
+              onChange={(e) => set("inlegJaren", Number(e.target.value))}
+            />
+            <p className="hint">
+              Daarna stoppen de stortingen en groeit het vermogen alleen nog
+              door rendement.
+            </p>
+          </div>
+        )}
 
         <div className="field">
           <label htmlFor="k-jaar">
