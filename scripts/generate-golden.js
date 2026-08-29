@@ -31,6 +31,7 @@ const cases = [
   {name:'hoge-kosten', V:300000,T:20,rendPct:7,kosten:5000,opricht:2500,liq:1,partner:false,soort:'beleggen'},
   {name:'lange-horizon-partner', V:750000,T:40,rendPct:9,kosten:1200,opricht:600,liq:10,partner:true,soort:'beleggen'},
   {name:'verliesjaren', V:400000,T:10,rendPct:-3,kosten:1200,opricht:600,liq:1,partner:false,soort:'beleggen'},
+  {name:'venster', V:200000,T:40,rendPct:4,kosten:100,opricht:100,liq:1,partner:false,soort:'spaar'},
 ];
 
 const out = cases.map(c => {

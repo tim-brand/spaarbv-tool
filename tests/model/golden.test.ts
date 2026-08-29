@@ -47,8 +47,8 @@ const cases: GoldenCase[] = golden;
 const stelsels: Stelsel[] = ["nu", "2028"];
 
 describe("golden values tegen de referentie-implementatie", () => {
-  it("dekt elf scenario's", () => {
-    expect(cases).toHaveLength(11);
+  it("dekt twaalf scenario's", () => {
+    expect(cases).toHaveLength(12);
   });
 
   for (const c of cases) {

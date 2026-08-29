@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { V_MAX, V_MIN, breakevenBands, decompose, delta, finalBV, finalBox3 } from "../../src/model/compare";
+import { PARAMS_2026 } from "../../src/model/params";
 import type { Inputs } from "../../src/model/types";
 
 const basis: Inputs = {
@@ -60,6 +61,23 @@ describe("breakevenBands", () => {
       expect(band.from).toBeLessThanOrEqual(V_MAX);
     }
   });
+
+  it("vindt een venster met een bovengrens wanneer de lage schijven wegvallen", () => {
+    // spaar, T=40, lage kosten, stelsel 2028: bij hoog vermogen vallen de lage
+    // Vpb- en box 2-schijf weg en verliest de BV weer boven een bovengrens,
+    // dus dit levert een venster op in plaats van een open-eind kantelpunt
+    const venster: Inputs = {
+      V: 200_000, T: 40, r: 0.04, d: 0.04, g: 0,
+      kosten: 100, opricht: 100, liqJaren: 1, mult: 1, soort: "spaar",
+    };
+    const band = breakevenBands(venster, "2028")[0];
+    expect(band).toBeDefined();
+    if (band === undefined) return;
+    expect(typeof band.from).toBe("number");
+    expect(typeof band.to).toBe("number");
+    if (typeof band.to !== "number") return;
+    expect(band.to).toBeGreaterThan(band.from);
+  });
 });
 
 describe("decompose", () => {
@@ -90,10 +108,12 @@ describe("decompose", () => {
   });
 
   it("muteert de meegegeven parameters niet", () => {
-    // regressietest op de globale-mutatie-hack uit het origineel
-    const voor = delta(200_000, basis, "2028");
-    decompose(200_000, basis, "2028");
-    decompose(200_000, basis, "nu");
-    expect(delta(200_000, basis, "2028")).toBeCloseTo(voor, 10);
+    // regressietest op de globale-mutatie-hack uit het origineel: bevries het
+    // parameterobject zodat een schrijfpoging (`p.hvv = 0` of `p.hvr = 0`)
+    // meteen een TypeError gooit in plaats van stilletjes te slagen en later
+    // weer teruggedraaid te worden
+    const bevroren = Object.freeze({ ...PARAMS_2026 });
+    expect(() => decompose(200_000, basis, "2028", bevroren)).not.toThrow();
+    expect(() => decompose(200_000, basis, "nu", bevroren)).not.toThrow();
   });
 });
