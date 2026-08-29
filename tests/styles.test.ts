@@ -14,6 +14,14 @@ declare const require: {
 const fs = require("node:fs");
 const path = require("node:path");
 
+// CSS-commentaar (/* ... */) verwijderen vóórdat we matchen: anders kan een
+// regel die is uitgecommentarieerd in plaats van verwijderd nog steeds als
+// "aanwezig" doorkomen, en levert de test een vals-positieve GREEN op een
+// kapotte stylesheet.
+function zonderCommentaar(tekst: string): string {
+  return tekst.replace(/\/\*[\s\S]*?\*\//g, "");
+}
+
 // Regressietest voor de CSS Grid min-content blowout: `1fr` is een
 // afkorting voor `minmax(auto, 1fr)`, en `auto` als minimum betekent
 // min-content. De tabel met `white-space: nowrap` duwde daardoor de
@@ -23,7 +31,8 @@ const path = require("node:path");
 // robuuster zijn, maar deze test voorkomt in ieder geval dat de kale
 // `1fr` stilletjes terugsluipt.
 describe("styles.css - grid blowout regressie", () => {
-  const css = fs.readFileSync(path.join(__dirname, "../src/styles.css"), "utf-8");
+  const ruweCss = fs.readFileSync(path.join(__dirname, "../src/styles.css"), "utf-8");
+  const css = zonderCommentaar(ruweCss);
 
   it("gebruikt minmax(0, 1fr) in plaats van kale 1fr voor de grid-kolommen", () => {
     const gridRules = css.match(/\.grid\s*{[^}]*}/g) ?? [];
