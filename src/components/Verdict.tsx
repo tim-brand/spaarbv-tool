@@ -30,6 +30,8 @@ export function Verdict({ inputs, stelsel, bands }: Props) {
   const onder = band?.from ?? null;
   const boven = band?.to ?? null;
 
+  const totaleInleg = 12 * inputs.inleg * inputs.inlegJaren;
+
   const tegelKlasse = (actief: boolean): string => {
     if (!actief) return "tile dim";
     return bvWint ? "tile" : "tile win-b3";
@@ -75,6 +77,14 @@ export function Verdict({ inputs, stelsel, bands }: Props) {
                 box 2-schijven weg.
               </>
             )}
+          </>
+        )}
+        {totaleInleg > 0 && (
+          <>
+            {" "}
+            Daarnaast leg je in totaal <b>{eur(totaleInleg)}</b> in:{" "}
+            {eur(inputs.inleg)} per maand, {inputs.inlegJaren} jaar lang. Beide
+            eindbedragen bevatten die stortingen.
           </>
         )}
         {nu > n28 && (

@@ -6,6 +6,7 @@ import type { Inputs } from "../../src/model/types";
 const basis: Inputs = {
   V: 200_000, T: 20, r: 0.07, d: 0, g: 0.07,
   kosten: 1200, opricht: 600, liqJaren: 1, mult: 1, soort: "beleggen",
+  inleg: 0, inlegJaren: 0,
 };
 
 describe("delta", () => {
@@ -69,6 +70,7 @@ describe("breakevenBands", () => {
     const venster: Inputs = {
       V: 200_000, T: 40, r: 0.04, d: 0.04, g: 0,
       kosten: 100, opricht: 100, liqJaren: 1, mult: 1, soort: "spaar",
+      inleg: 0, inlegJaren: 0,
     };
     const band = breakevenBands(venster, "2028")[0];
     expect(band).toBeDefined();
@@ -77,6 +79,28 @@ describe("breakevenBands", () => {
     expect(typeof band.to).toBe("number");
     if (typeof band.to !== "number") return;
     expect(band.to).toBeGreaterThan(band.from);
+  });
+});
+
+describe("met maandelijkse inleg", () => {
+  it("laat de identiteit delta = decompose().totaal ook met inleg gelden", () => {
+    const metInleg = { ...basis, inleg: 500, inlegJaren: basis.T };
+    expect(decompose(200_000, metInleg, "2028").totaal).toBeCloseTo(
+      delta(200_000, metInleg, "2028"),
+      6,
+    );
+  });
+
+  it("verschuift het kantelpunt omhoog naarmate er meer wordt ingelegd", () => {
+    const zonderInleg = breakevenBands(basis, "2028")[0];
+    const metInleg = breakevenBands(
+      { ...basis, inleg: 5_000, inlegJaren: basis.T },
+      "2028",
+    )[0];
+    expect(zonderInleg).toBeDefined();
+    expect(metInleg).toBeDefined();
+    if (zonderInleg === undefined || metInleg === undefined) return;
+    expect(metInleg.from).toBeGreaterThan(zonderInleg.from);
   });
 });
 

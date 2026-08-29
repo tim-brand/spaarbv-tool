@@ -24,6 +24,10 @@ export interface Inputs {
   liqJaren: number;
   /** 2 met fiscale partner, anders 1. */
   mult: 1 | 2;
+  /** Maandelijkse inleg in euro's. 0 = geen inleg. */
+  inleg: number;
+  /** Aantal jaren (vanaf jaar 1) waarin wordt ingelegd; begrensd op T. */
+  inlegJaren: number;
   soort: Soort;
 }
 
@@ -31,6 +35,8 @@ export interface Inputs {
 export interface Box3Year {
   /** Vermogen aan het begin van het jaar. */
   begin: number;
+  /** Gestorte hoofdsom van dat jaar (12 × maandinleg), 0 buiten de inlegperiode. */
+  inleg: number;
   /** Resultaat over dat jaar. */
   rend: number;
   /** Box 3-heffing, betaald uit het vermogen zelf. */
@@ -42,6 +48,8 @@ export interface Box3Year {
 /** Eén jaar in de BV-route. */
 export interface BvYear {
   begin: number;
+  /** Gestorte hoofdsom van dat jaar (12 × maandinleg), 0 buiten de inlegperiode. */
+  inleg: number;
   rend: number;
   /** Kosten van dat jaar, inclusief oprichting in jaar 1. */
   kosten: number;

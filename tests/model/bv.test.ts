@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { netIfLiquidatedNow, simulateBV } from "../../src/model/bv";
 import { PARAMS_2026 } from "../../src/model/params";
+import { inlegFactor } from "../../src/model/inleg";
 import type { Inputs } from "../../src/model/types";
 
 const basis: Inputs = {
   V: 200_000, T: 20, r: 0.07, d: 0, g: 0.07,
   kosten: 1200, opricht: 600, liqJaren: 1, mult: 1, soort: "beleggen",
+  inleg: 0, inlegJaren: 0,
 };
 
 describe("netIfLiquidatedNow", () => {
@@ -102,5 +104,61 @@ describe("simulateBV", () => {
 
   it("geeft precies T rijen terug", () => {
     expect(simulateBV(200_000, { ...basis, T: 9 })).toHaveLength(9);
+  });
+});
+
+describe("simulateBV — maandelijkse inleg", () => {
+  it("geeft de inleg bij rendement nul onbelast terug (verkrijgingsprijs)", () => {
+    // r = 0: geen groei, dus alles is exact na te rekenen.
+    // Eindstand = 100.000 + 5 × 6.000 - (5 × 1.200 + 600) = 123.400.
+    // De verkrijgingsprijs is 130.000, dus box 2 heft niets: netto = 123.400.
+    // (Zonder meegroeiende verkrijgingsprijs zou 123.400 - 100.000 = 23.400
+    // in box 2 vallen en was netto 123.400 - 5.733 = 117.667 — de mutatie
+    // die deze test moet betrappen.)
+    const nul: Inputs = {
+      ...basis, V: 100_000, T: 5, r: 0, d: 0, g: 0,
+      inleg: 500, inlegJaren: 5,
+    };
+    const rows = simulateBV(100_000, nul);
+    const laatste = rows[rows.length - 1];
+    expect(laatste).toBeDefined();
+    if (laatste === undefined) return;
+    expect(laatste.netto).toBeCloseTo(123_400, 6);
+  });
+
+  it("belast de rente op de inleg bij spaargeld direct in de Vpb", () => {
+    const spaar: Inputs = {
+      ...basis, V: 200_000, T: 2, r: 0.02, d: 0.02, g: 0,
+      soort: "spaar", inleg: 100, inlegJaren: 2,
+    };
+    const groei = 100 * (inlegFactor(0.02) - 12);
+    const rows = simulateBV(200_000, spaar);
+    const jaar1 = rows[0];
+    expect(jaar1).toBeDefined();
+    if (jaar1 === undefined) return;
+    // winst jaar 1 = rente 4.000 + inlegrente - kosten 1.800; Vpb 19%.
+    expect(jaar1.vpb).toBeCloseTo(0.19 * (4_000 + groei - 1_800), 6);
+    // Strikt groter dan zonder inleg (0,19 × 2.200 = 418).
+    expect(jaar1.vpb).toBeGreaterThan(418);
+  });
+
+  it("laat de koersgroei op de inleg buiten de boekwaarde (uitstel)", () => {
+    const beleg: Inputs = { ...basis, V: 100_000, T: 1, inleg: 500, inlegJaren: 1 };
+    const rows = simulateBV(100_000, beleg);
+    const jaar1 = rows[0];
+    expect(jaar1).toBeDefined();
+    if (jaar1 === undefined) return;
+    const groei = 500 * (inlegFactor(0.07) - 12);
+    // Marktwaarde: begin × 1,07 + hoofdsom + inleggroei, min de verkochte
+    // stukken voor kosten (jaar 1: 1.200 + 600 = 1.800; d = 0, dus saldo -1.800).
+    expect(jaar1.stand).toBeCloseTo(100_000 * 1.07 + 6_000 + groei - 1_800, 6);
+    expect(jaar1.rend).toBeCloseTo(7_000 + groei, 6);
+    expect(jaar1.inleg).toBe(6_000);
+  });
+
+  it("stopt met storten na het stopjaar", () => {
+    const stop: Inputs = { ...basis, V: 100_000, T: 4, inleg: 500, inlegJaren: 2 };
+    const rows = simulateBV(100_000, stop);
+    expect(rows.map((rij) => rij.inleg)).toEqual([6_000, 6_000, 0, 0]);
   });
 });

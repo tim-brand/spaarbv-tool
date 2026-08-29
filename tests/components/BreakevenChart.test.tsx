@@ -88,6 +88,8 @@ describe("BreakevenChart", () => {
       opricht: 100,
       liqJaren: 1,
       mult: 1,
+      inleg: 0,
+      inlegJaren: 0,
     };
     const stelsel: Stelsel = "2028";
     const bands = breakevenBands(inputs, stelsel);

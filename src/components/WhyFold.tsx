@@ -46,7 +46,7 @@ export function WhyFold({ inputs, stelsel, bands }: Props) {
 
           <div className="mini-r">
             <span>Wat het uitstel van belasting oplevert</span>
-            <b style={{ color: "var(--pos)" }}>
+            <b style={{ color: eigen.uitstel >= 0 ? "var(--pos)" : "var(--bv)" }}>
               {teken(eigen.uitstel)}
               {eur(Math.abs(eigen.uitstel))}
             </b>

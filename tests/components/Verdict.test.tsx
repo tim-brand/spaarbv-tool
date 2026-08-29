@@ -104,4 +104,16 @@ describe("Verdict", () => {
     expect(links).toBeGreaterThan(35);
     expect(links).toBeLessThan(45);
   });
+
+  it("noemt de totale inleg wanneer er maandelijks wordt ingelegd", () => {
+    paneel({ inleg: 500, inlegJaren: 10 });
+    // 12 × 500 × 10 = 60.000
+    expect(tekst("60.000")).toBeDefined();
+    expect(tekst("per maand")).toBeDefined();
+  });
+
+  it("zwijgt over inleg wanneer die nul is", () => {
+    paneel();
+    expect(document.body.textContent ?? "").not.toContain("per maand");
+  });
 });

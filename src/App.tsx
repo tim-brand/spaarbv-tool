@@ -22,7 +22,8 @@ export default function App() {
   const liqHint = useMemo((): string => {
     const rows = simulateBV(inputs.V, inputs);
     const laatste = rows[rows.length - 1];
-    if (laatste === undefined || laatste.stand <= inputs.V) return STANDAARD_LIQ_HINT;
+    const ingelegd = inputs.V + 12 * inputs.inleg * inputs.inlegJaren;
+    if (laatste === undefined || laatste.stand <= ingelegd) return STANDAARD_LIQ_HINT;
 
     const nu = laatste.stand - laatste.netto;
     const alt = inputs.liqJaren === 1 ? 5 : 1;
@@ -70,7 +71,7 @@ export default function App() {
           <BreakevenChart inputs={inputs} stelsel={form.stelsel} bands={bands} />
           <YearTable inputs={inputs} stelsel={form.stelsel} />
           <TimeChart inputs={inputs} stelsel={form.stelsel} />
-          <Assumptions />
+          <Assumptions inleg={inputs.inleg} />
           <p className="foot">Rekenmodel · indicatief · peiljaar 2026</p>
         </div>
       </div>

@@ -116,4 +116,51 @@ describe("Inputs", () => {
     expect(screen.getByRole("button", { name: "Beleggingen" })).toBeDefined();
     expect(screen.getByRole("button", { name: "Spaargeld" })).toBeDefined();
   });
+
+  it("toont een veld voor de maandelijkse inleg", () => {
+    setup();
+    expect(screen.getByLabelText("Maandelijkse inleg")).toBeDefined();
+  });
+
+  it("verbergt de inlegperiode zolang er geen inleg is", () => {
+    setup();
+    expect(screen.queryByLabelText(/Inleggen gedurende/)).toBeNull();
+  });
+
+  it("toont de inlegperiode zodra er een inleg staat, standaard de horizon", () => {
+    setup({ inlegText: "500" });
+    const slider = screen.getByLabelText(/Inleggen gedurende/);
+    if (!(slider instanceof HTMLInputElement)) throw new Error("geen input");
+    expect(slider.value).toBe("20");
+    expect(screen.getByText("20 van de 20 jaar")).toBeDefined();
+  });
+
+  it("meldt een gekozen inlegperiode", () => {
+    const { onChange } = setup({ inlegText: "500" });
+    const slider = screen.getByLabelText(/Inleggen gedurende/);
+    fireEvent.change(slider, { target: { value: "10" } });
+    expect(onChange).toHaveBeenCalledWith(
+      expect.objectContaining({ inlegJaren: 10 }),
+    );
+  });
+
+  it("klemt de getoonde inlegperiode af op een verlaagde horizon", () => {
+    // Zonder afklemmen blijft de weergave de oude waarde (30) tonen, terwijl
+    // toInputs die al terugbrengt naar de horizon (10).
+    setup({ inlegText: "500", inlegJaren: 30, T: 10 });
+    const slider = screen.getByLabelText(/Inleggen gedurende/);
+    if (!(slider instanceof HTMLInputElement)) throw new Error("geen input");
+    expect(slider.value).toBe("10");
+    expect(screen.getByText("10 van de 10 jaar")).toBeDefined();
+    expect(screen.queryByText(/30 van de/)).toBeNull();
+  });
+
+  it("meldt een nieuwe inlegtekst", () => {
+    const { onChange } = setup();
+    const veld = screen.getByLabelText("Maandelijkse inleg");
+    fireEvent.change(veld, { target: { value: "750" } });
+    expect(onChange).toHaveBeenCalledWith(
+      expect.objectContaining({ inlegText: "750" }),
+    );
+  });
 });

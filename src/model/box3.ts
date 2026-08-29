@@ -1,5 +1,6 @@
 import { PARAMS_2026, type TaxParams } from "./params";
 import type { Box3Year, Inputs, Stelsel } from "./types";
+import { jaarInleg } from "./inleg";
 
 /**
  * Simuleert de privé-route in box 3 over `s.T` jaren.
@@ -16,6 +17,8 @@ import type { Box3Year, Inputs, Stelsel } from "./types";
  * waarin je meer verdient dan het forfait.
  *
  * De heffing wordt uit het vermogen zelf betaald; er wordt niet bijgestort.
+ * Maandelijkse deposits worden in 2028 direct belast (inclusief hun
+ * eerstejaarsgroei), maar in het huidige stelsel pas op de volgende peildatum.
  */
 export function simulateBox3(
   V: number,
@@ -33,8 +36,10 @@ export function simulateBox3(
 
   for (let i = 0; i < s.T; i += 1) {
     const begin = vermogen;
-    const rend = begin * s.r;
-    vermogen = begin + rend;
+    const storting =
+      i < s.inlegJaren ? jaarInleg(s.inleg, s.r) : { hoofdsom: 0, groei: 0 };
+    const rend = begin * s.r + storting.groei;
+    vermogen = begin + rend + storting.hoofdsom;
 
     let tax: number;
     if (stelsel === "2028") {
@@ -53,7 +58,7 @@ export function simulateBox3(
     }
 
     vermogen -= tax;
-    rows.push({ begin, rend, tax, netto: vermogen });
+    rows.push({ begin, inleg: storting.hoofdsom, rend, tax, netto: vermogen });
   }
 
   return rows;

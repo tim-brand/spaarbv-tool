@@ -1,4 +1,9 @@
-export function Assumptions() {
+interface Props {
+  /** Maandelijkse inleg; bij 0 blijven de inleg-aannames verborgen. */
+  inleg: number;
+}
+
+export function Assumptions({ inleg }: Props) {
   return (
     <details>
       <summary>Aannames en spelregels</summary>
@@ -29,6 +34,17 @@ export function Assumptions() {
             verkrijgingsprijs en komt onbelast terug; alleen de aangroei daarboven
             is box 2-belast.
           </li>
+          {inleg > 0 && (
+            <li>
+              <b>Maandelijkse inleg.</b> Het model stort aan het begin van elke
+              maand en rekent daarover naar rato rendement in het jaar van
+              storten. In de BV is elke storting een agiostorting: ze verhoogt
+              de verkrijgingsprijs en komt bij liquidatie onbelast terug. In het
+              huidige box 3-stelsel tellen de stortingen van een jaar pas mee op
+              de eerstvolgende peildatum; in het nieuwe stelsel telt hun
+              rendement direct mee in het werkelijke resultaat.
+            </li>
+          )}
           <li>
             <b>Waardering op kostprijs of lagere marktwaarde.</b> De beleggingen
             staan op de balans voor wat je ervoor betaald hebt. Stijgt de koers,
