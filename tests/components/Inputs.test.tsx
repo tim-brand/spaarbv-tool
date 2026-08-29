@@ -104,4 +104,16 @@ describe("Inputs", () => {
     setup({ liqJaren: 5 });
     expect(screen.getByText("in 5 jaar")).toBeDefined();
   });
+
+  it("koppelt de zichtbare tekst als toegankelijke naam aan beide groepen", () => {
+    setup();
+    expect(
+      screen.getByRole("group", { name: "Wat voor vermogen is het?" }),
+    ).toBeDefined();
+    expect(
+      screen.getByRole("group", { name: "Welk box 3-stelsel" }),
+    ).toBeDefined();
+    expect(screen.getByRole("button", { name: "Beleggingen" })).toBeDefined();
+    expect(screen.getByRole("button", { name: "Spaargeld" })).toBeDefined();
+  });
 });

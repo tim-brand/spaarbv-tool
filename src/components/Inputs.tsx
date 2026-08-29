@@ -48,8 +48,8 @@ export function Inputs({ form, onChange, liqHint }: Props) {
         <p className="card-title">Jouw vermogen</p>
 
         <div className="field">
-          <label>Wat voor vermogen is het?</label>
-          <div className="seg" role="group" aria-label="Soort vermogen">
+          <label id="soort-label">Wat voor vermogen is het?</label>
+          <div className="seg" role="group" aria-labelledby="soort-label">
             <button
               type="button"
               aria-pressed={form.soort === "beleggen"}
@@ -168,9 +168,9 @@ export function Inputs({ form, onChange, liqHint }: Props) {
       </div>
 
       <div className="card">
-        <p className="card-title">Welk box 3-stelsel</p>
+        <p className="card-title" id="stelsel-label">Welk box 3-stelsel</p>
         <div className="field">
-          <div className="seg" role="group" aria-label="Box 3-stelsel">
+          <div className="seg" role="group" aria-labelledby="stelsel-label">
             <button
               type="button" aria-pressed={form.stelsel === "2028"}
               onClick={() => set("stelsel", "2028" satisfies Stelsel)}
