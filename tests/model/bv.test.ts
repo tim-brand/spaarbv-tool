@@ -6,6 +6,7 @@ import type { Inputs } from "../../src/model/types";
 const basis: Inputs = {
   V: 200_000, T: 20, r: 0.07, d: 0, g: 0.07,
   kosten: 1200, opricht: 600, liqJaren: 1, mult: 1, soort: "beleggen",
+  inleg: 0, inlegJaren: 0,
 };
 
 describe("netIfLiquidatedNow", () => {

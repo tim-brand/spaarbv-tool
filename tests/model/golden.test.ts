@@ -37,6 +37,7 @@ function toInputs(g: GoldenInput): Inputs {
     V: g.V, T: g.T, r, d, g: r - d,
     kosten: g.kosten, opricht: g.opricht, liqJaren: g.liq,
     mult: g.partner ? 2 : 1, soort: g.soort,
+    inleg: 0, inlegJaren: 0,
   };
 }
 

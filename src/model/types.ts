@@ -24,6 +24,10 @@ export interface Inputs {
   liqJaren: number;
   /** 2 met fiscale partner, anders 1. */
   mult: 1 | 2;
+  /** Maandelijkse inleg in euro's. 0 = geen inleg. */
+  inleg: number;
+  /** Aantal jaren (vanaf jaar 1) waarin wordt ingelegd; begrensd op T. */
+  inlegJaren: number;
   soort: Soort;
 }
 

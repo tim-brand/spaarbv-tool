@@ -55,6 +55,8 @@ export function toInputs(f: FormState): Inputs {
     kosten: parseNum(f.kostenText, DEFAULT_KOSTEN, MAX_BEDRAG),
     opricht: parseNum(f.oprichtText, DEFAULT_OPRICHT, MAX_BEDRAG),
     liqJaren: f.liqJaren,
+    inleg: 0,
+    inlegJaren: 0,
     mult: f.partner ? 2 : 1,
     soort: f.soort,
   };
