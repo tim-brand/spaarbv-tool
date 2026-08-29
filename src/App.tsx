@@ -70,7 +70,7 @@ export default function App() {
           <BreakevenChart inputs={inputs} stelsel={form.stelsel} bands={bands} />
           <YearTable inputs={inputs} stelsel={form.stelsel} />
           <TimeChart inputs={inputs} stelsel={form.stelsel} />
-          <Assumptions />
+          <Assumptions inleg={inputs.inleg} />
           <p className="foot">Rekenmodel · indicatief · peiljaar 2026</p>
         </div>
       </div>
