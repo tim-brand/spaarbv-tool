@@ -90,7 +90,7 @@ export function YearTable({ inputs, stelsel }: Props) {
       </div>
 
       <p className="scroll-hint">
-        Sleep horizontaal voor alle kolommen. „Netto vermogen privé" bij de BV is
+        Sleep horizontaal voor alle kolommen. „Netto vermogen privé” bij de BV is
         wat je overhoudt als je de BV in dát jaar zou liquideren en uitkeren.
       </p>
     </div>
