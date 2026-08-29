@@ -30,7 +30,7 @@ describe("simulateBox3 — nieuw stelsel (2028)", () => {
     expect(eerste.tax).toBeCloseTo(3_744, 6);
   });
 
-  it("belast een verliesjaar niet en verrekent het verlies voorwaarts", () => {
+  it("belast een verliesjaar niet", () => {
     const verlies: Inputs = { ...basis, T: 2, r: -0.1, g: -0.1 };
     const rows = simulateBox3(100_000, verlies, "2028");
     const [jaar1, jaar2] = rows;
