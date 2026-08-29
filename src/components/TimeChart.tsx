@@ -3,7 +3,7 @@ import { simulateBox3 } from "../model/box3";
 import { simulateBV } from "../model/bv";
 import { kort } from "../model/format";
 import type { Inputs, Stelsel } from "../model/types";
-import { Label } from "./chart/Label";
+import { Label, labelBreedte } from "./chart/Label";
 import { yTicks } from "./chart/axis";
 
 interface Props {
@@ -11,10 +11,13 @@ interface Props {
   stelsel: Stelsel;
 }
 
-const W = 720;
-
 export function TimeChart({ inputs, stelsel }: Props) {
   const smal = useIsNarrow();
+  // Op smalle schermen krimpt de viewBox mee, zodat de grotere astekst (zie
+  // styles.css) ook echt groter uitpakt: bij een vaste W=720 werd de SVG op
+  // een smal kaartje zo ver teruggeschaald dat de tekst juist kleiner oogde
+  // dan op desktop, ondanks de hogere font-size in viewBox-eenheden.
+  const W = smal ? 380 : 720;
   const H = smal ? 360 : 300;
   const M = smal ? { t: 26, r: 22, b: 64, l: 92 } : { t: 22, r: 24, b: 44, l: 78 };
 
@@ -68,6 +71,31 @@ export function TimeChart({ inputs, stelsel }: Props) {
   for (let j = 0; j <= inputs.T; j += stap) jaarTicks.push(j);
 
   const eindV = d[inputs.T] ?? 0;
+  // Een omslagjaar is alleen betekenisvol als de BV aan het eind van de
+  // horizon ook echt nog voorstaat. Zonder deze check kon de eerste
+  // kruising naar positief worden aangekondigd terwijl de lijn later weer
+  // onder nul zakt en daar blijft — een voorsprong die nooit standhoudt.
+  if (eindV <= 0) omslag = null;
+
+  // Op een smal scherm passen labels hun ankerpunt aan op basis van hun
+  // eigen geschatte breedte: bij de smallere viewBox (zie W hierboven) is er
+  // simpelweg minder ruimte, en de oude vaste drempel (200/150 pixels vrije
+  // ruimte, hieronder ongewijzigd gelaten voor desktop) klopt dan niet meer.
+  const omslagTekst = omslag !== null ? `vanaf jaar ${omslag} sta je voor` : "";
+  const omslagRechts =
+    omslag !== null &&
+    (smal
+      ? X(omslag) + 7 + labelBreedte(omslagTekst, true) <= W - M.r
+      : X(omslag) < W - 200);
+
+  const dalTekst = `diepste dal ${kort(dal)}`;
+  const dalAnchor: "middle" | "end" = smal
+    ? X(dalJaar) + labelBreedte(dalTekst, true) / 2 > W - M.r
+      ? "end"
+      : "middle"
+    : X(dalJaar) > W - 150
+      ? "end"
+      : "middle";
 
   return (
     <div className="card">
@@ -91,8 +119,16 @@ export function TimeChart({ inputs, stelsel }: Props) {
 
         <line x1={M.l} x2={W - M.r} y1={y0} y2={y0} className="zl" />
         <text x={M.l - 9} y={y0 + 3.5} className="ax" textAnchor="end">€0</text>
-        <Label x={M.l + 6} y={y0 - 7} text="↑ BV staat voor" color="#8a6708" narrow={smal} />
-        <Label x={M.l + 6} y={y0 + 16} text="↓ BV staat achter" color="#2f6f8f" narrow={smal} />
+        {/* Op brede schermen blijven deze labels hier getekend (ongewijzigd
+            t.o.v. voorheen). Op smalle schermen staan ze pas ná de dal-stip
+            hieronder, zodat hun witte plaatje bovenop een eventueel
+            overlappende stip valt — zie de toelichting daar. */}
+        {!smal && (
+          <>
+            <Label x={M.l + 6} y={y0 - 7} text="↑ BV staat voor" color="#8a6708" narrow={false} />
+            <Label x={M.l + 6} y={y0 + 16} text="↓ BV staat achter" color="#2f6f8f" narrow={false} />
+          </>
+        )}
 
         {jaarTicks.map((j) => (
           <text key={j} x={X(j)} y={H - M.b + (smal ? 24 : 15)} className="ax" textAnchor="middle">
@@ -115,11 +151,11 @@ export function TimeChart({ inputs, stelsel }: Props) {
               fill="none" stroke="#6f3ea8" strokeWidth={1.5} strokeDasharray="4 3"
             />
             <Label
-              x={X(omslag) + (X(omslag) < W - 200 ? 7 : -7)}
+              x={X(omslag) + (omslagRechts ? 7 : -7)}
               y={M.t + 2}
-              text={`vanaf jaar ${omslag} sta je voor`}
+              text={omslagTekst}
               color="#6f3ea8"
-              anchor={X(omslag) < W - 200 ? "start" : "end"}
+              anchor={omslagRechts ? "start" : "end"}
               narrow={smal}
             />
           </>
@@ -129,10 +165,21 @@ export function TimeChart({ inputs, stelsel }: Props) {
           <>
             <circle cx={X(dalJaar)} cy={Y(dal)} r={4} fill="#2f6f8f" />
             <Label
-              x={X(dalJaar)} y={Y(dal) + 20}
-              text={`diepste dal ${kort(dal)}`} color="#2f6f8f"
-              anchor={X(dalJaar) > W - 150 ? "end" : "middle"} narrow={smal}
+              x={X(dalJaar)} y={Y(dal) + (smal ? 26 : 20)}
+              text={dalTekst} color="#2f6f8f"
+              anchor={dalAnchor} narrow={smal}
             />
+          </>
+        )}
+
+        {/* Zie toelichting hierboven: op smal scherm ná de dal-stip getekend,
+            zodat het witte plaatje van het label bovenop een eventueel
+            overlappende stip valt in plaats van eronder — anders kan de stip
+            dwars door de banier-tekst heen steken bij een ondiep dal. */}
+        {smal && (
+          <>
+            <Label x={M.l + 6} y={y0 - 11} text="↑ BV staat voor" color="#8a6708" narrow />
+            <Label x={M.l + 6} y={y0 + 24} text="↓ BV staat achter" color="#2f6f8f" narrow />
           </>
         )}
       </svg>
@@ -140,9 +187,14 @@ export function TimeChart({ inputs, stelsel }: Props) {
       <p className="chart-note">
         {omslag !== null ? (
           <>
-            De BV start met een achterstand: de kosten lopen al terwijl het
-            belastingvoordeel nog moet opbouwen. Het diepste punt ligt in jaar{" "}
-            {dalJaar} op {kort(dal)}. Pas in <b>jaar {omslag}</b> haal je box 3 in,
+            {dal < 0 && (
+              <>
+                De BV start met een achterstand: de kosten lopen al terwijl het
+                belastingvoordeel nog moet opbouwen. Het diepste punt ligt in
+                jaar {dalJaar} op {kort(dal)}.{" "}
+              </>
+            )}
+            Pas in <b>jaar {omslag}</b> haal je box 3 in,
             en daarna loopt het verschil op tot {kort(eindV)} in jaar {inputs.T}.
             Stap je er eerder uit, dan ben je slechter af.
           </>

@@ -56,6 +56,31 @@ describe("TimeChart", () => {
     expect(document.querySelector("circle")).not.toBeNull();
   });
 
+  it("meldt geen blijvende omslag als de voorsprong later weer wegzakt (fix 1)", () => {
+    // V €125.000, T 30, r 0,5%, stelsel "nu": de lijn kruist in jaar 4 naar
+    // positief, piekt rond jaar 14 en eindigt op −€397 — de voorsprong houdt
+    // dus niet stand. De caption moet dan de "geen omslag"-boodschap tonen,
+    // niet de kruising in jaar 4 aankondigen.
+    grafiek({ V: 125_000, T: 30, r: 0.005, d: 0, g: 0.005 }, "nu");
+    const note = document.querySelector(".chart-note");
+    expect(note?.textContent).toContain("niet boven box 3 uit");
+    expect(note?.textContent).not.toContain("haal je box 3 in");
+    expect(note?.textContent).not.toContain("jaar 4");
+    // Ook de kruisingslijn en het bijbehorende label mogen niet getekend zijn.
+    expect(document.body.textContent).not.toContain("vanaf jaar");
+  });
+
+  it("noemt geen dieptepunt als de route nooit onder nul komt (fix 2)", () => {
+    // V €145.000, T 5, r 0,5%, stelsel "nu": de BV staat al vanaf jaar 1
+    // voor, dus `dal`/`dalJaar` blijven op hun startwaarde 0. Dat is geen
+    // echt dieptepunt en mag niet als "jaar 0 op €0" gemeld worden.
+    grafiek({ V: 145_000, T: 5, r: 0.005, d: 0, g: 0.005 }, "nu");
+    const note = document.querySelector(".chart-note");
+    expect(note?.textContent).not.toContain("diepste punt");
+    expect(note?.textContent).not.toContain("jaar 0");
+    expect(document.querySelector("circle")).toBeNull();
+  });
+
   it("labelt de assen", () => {
     grafiek();
     expect(document.body.textContent).toContain("jaren dat je het volhoudt");
