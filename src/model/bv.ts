@@ -86,7 +86,8 @@ export function netIfLiquidatedNow(
  *
  * Maandelijkse stortingen zijn agiostortingen: zij voeren de boekwaarde en
  * verkrijgingsprijs op met hun hoofdsom, zodat die onbelast terugkomen bij
- * liquidatie; hun directe rendement wordt in-jaar belast, hun koersgroei loopt uit.
+ * liquidatie; hun directe rendement wordt in-jaar belast, hun koersgroei wordt
+ * uitgesteld.
  *
  * `netto` per rij is wat je overhoudt als je de BV in dát jaar zou liquideren
  * en uitkeren — zo zijn beide routes elk jaar appels met appels.

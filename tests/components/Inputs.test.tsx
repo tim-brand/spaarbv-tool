@@ -144,6 +144,17 @@ describe("Inputs", () => {
     );
   });
 
+  it("klemt de getoonde inlegperiode af op een verlaagde horizon", () => {
+    // Zonder afklemmen blijft de weergave de oude waarde (30) tonen, terwijl
+    // toInputs die al terugbrengt naar de horizon (10).
+    setup({ inlegText: "500", inlegJaren: 30, T: 10 });
+    const slider = screen.getByLabelText(/Inleggen gedurende/);
+    if (!(slider instanceof HTMLInputElement)) throw new Error("geen input");
+    expect(slider.value).toBe("10");
+    expect(screen.getByText("10 van de 10 jaar")).toBeDefined();
+    expect(screen.queryByText(/30 van de/)).toBeNull();
+  });
+
   it("meldt een nieuwe inlegtekst", () => {
     const { onChange } = setup();
     const veld = screen.getByLabelText("Maandelijkse inleg");

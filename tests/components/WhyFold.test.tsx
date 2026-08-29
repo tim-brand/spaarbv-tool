@@ -89,6 +89,15 @@ describe("WhyFold", () => {
   // box 2-schijven te verschijnen. Bekende, tegen het model geverifieerde
   // parameters die tot zo'n gesloten band leiden:
   // breakevenBands -> [{ from: 1399340.60..., to: 1939108.34... }]
+  it("kleurt een negatief uitstel niet in de positieve kleur", () => {
+    // V 30.000 + € 3.000/maand gedurende de hele horizon (20 jaar) duwt
+    // eigen.uitstel in het rood: de eerste .mini-r b hoort dan de BV-kleur
+    // te krijgen, niet var(--pos).
+    paneel({ V: 30_000, inleg: 3_000, inlegJaren: 20 });
+    const eersteWaarde = document.querySelectorAll(".mini-r b")[0];
+    expect(eersteWaarde?.getAttribute("style")).toContain("--bv");
+  });
+
   it("noemt de bovengrens als de band gesloten is", () => {
     paneel(
       {

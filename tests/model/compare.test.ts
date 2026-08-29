@@ -82,6 +82,28 @@ describe("breakevenBands", () => {
   });
 });
 
+describe("met maandelijkse inleg", () => {
+  it("laat de identiteit delta = decompose().totaal ook met inleg gelden", () => {
+    const metInleg = { ...basis, inleg: 500, inlegJaren: basis.T };
+    expect(decompose(200_000, metInleg, "2028").totaal).toBeCloseTo(
+      delta(200_000, metInleg, "2028"),
+      6,
+    );
+  });
+
+  it("verschuift het kantelpunt omhoog naarmate er meer wordt ingelegd", () => {
+    const zonderInleg = breakevenBands(basis, "2028")[0];
+    const metInleg = breakevenBands(
+      { ...basis, inleg: 5_000, inlegJaren: basis.T },
+      "2028",
+    )[0];
+    expect(zonderInleg).toBeDefined();
+    expect(metInleg).toBeDefined();
+    if (zonderInleg === undefined || metInleg === undefined) return;
+    expect(metInleg.from).toBeGreaterThan(zonderInleg.from);
+  });
+});
+
 describe("decompose", () => {
   it("telt exact op tot delta", () => {
     for (const V of [50_000, 200_000, 750_000, 2_000_000]) {

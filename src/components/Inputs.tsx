@@ -46,6 +46,7 @@ export function Inputs({ form, onChange, liqHint }: Props) {
   };
 
   const inleg = parseNum(form.inlegText, 0, MAX_BEDRAG);
+  const inlegJarenTonen = Math.min(form.inlegJaren ?? form.T, form.T);
 
   return (
     <>
@@ -106,12 +107,12 @@ export function Inputs({ form, onChange, liqHint }: Props) {
             <label htmlFor="k-inlegjaren">
               Inleggen gedurende{" "}
               <span className="val">
-                {form.inlegJaren ?? form.T} van de {form.T} jaar
+                {inlegJarenTonen} van de {form.T} jaar
               </span>
             </label>
             <input
               type="range" id="k-inlegjaren" min={1} max={form.T} step={1}
-              value={form.inlegJaren ?? form.T}
+              value={inlegJarenTonen}
               onChange={(e) => set("inlegJaren", Number(e.target.value))}
             />
             <p className="hint">

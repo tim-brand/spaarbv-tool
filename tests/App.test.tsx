@@ -58,4 +58,27 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "Spaargeld" }));
     expect(screen.getByText("bij geen enkel vermogen")).toBeDefined();
   });
+
+  it("valt terug op de standaard liquiditeitshint als de stand door de inleg nog onder de totale inbreng blijft", () => {
+    // V 25.000, T 5 jaar, 0,5% rendement, spaar en € 3.000/maand: de stand
+    // (~201.260) blijft onder wat er is ingelegd (205.000), terwijl hij wel
+    // boven V zelf uitkomt. De oude vergelijking (stand <= V) zag dat niet en
+    // beweerde dan ten onrechte dat de uitkering al in het lage box
+    // 2-tarief past.
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "Spaargeld" }));
+    fireEvent.change(screen.getByLabelText(/Vermogen nu/), {
+      target: { value: "25000" },
+    });
+    fireEvent.change(screen.getByLabelText(/Horizon/), { target: { value: "5" } });
+    fireEvent.change(screen.getByLabelText(/Rendement per jaar/), {
+      target: { value: "0.5" },
+    });
+    fireEvent.change(screen.getByLabelText("Maandelijkse inleg"), {
+      target: { value: "3000" },
+    });
+    expect(
+      screen.getByText("Gespreid uitkeren benut het lage box 2-tarief vaker."),
+    ).toBeDefined();
+  });
 });
