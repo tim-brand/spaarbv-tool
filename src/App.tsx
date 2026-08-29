@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { DEFAULTS, toInputs, type FormState } from "./state";
 import { breakevenBands } from "./model/compare";
 import { Inputs as InputsPanel } from "./components/Inputs";
+import { Verdict } from "./components/Verdict";
 
 export default function App() {
   const [form, setForm] = useState<FormState>(DEFAULTS);
@@ -34,11 +35,8 @@ export default function App() {
           />
         </div>
         <div>
-          <p>
-            kantelpunt:{" "}
-            {bands[0] === undefined ? "geen" : Math.round(bands[0].from)}
-          </p>
-          {/* Tasks 9-14 */}
+          <Verdict inputs={inputs} stelsel={form.stelsel} bands={bands} />
+          {/* Tasks 10-14 */}
         </div>
       </div>
       <button type="button" onClick={() => setForm(DEFAULTS)}>
