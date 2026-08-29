@@ -30,9 +30,9 @@ const cases = [
   {name:'laag-rendement', V:400000,T:20,rendPct:1.5,kosten:1200,opricht:600,liq:1,partner:false,soort:'beleggen'},
   {name:'hoge-kosten', V:300000,T:20,rendPct:7,kosten:5000,opricht:2500,liq:1,partner:false,soort:'beleggen'},
   {name:'lange-horizon-partner', V:750000,T:40,rendPct:9,kosten:1200,opricht:600,liq:10,partner:true,soort:'beleggen'},
+  {name:'verliesjaren', V:400000,T:10,rendPct:-3,kosten:1200,opricht:600,liq:1,partner:false,soort:'beleggen'},
 ];
 
-const round = x => Math.round(x*100)/100;
 const out = cases.map(c => {
   const s = mk(c);
   const res = { name:c.name, input:{V:c.V,T:c.T,rendPct:c.rendPct,kosten:c.kosten,
@@ -41,19 +41,19 @@ const out = cases.map(c => {
     const b3 = R.simBox3(c.V, s, st);
     const bv = R.simBV(c.V, s);
     const o  = R.ontleed(c.V, s, st);
-    const bd = R.bands(s, st).map(b => [round(b[0]), isFinite(b[1])?round(b[1]):null]);
+    const bd = R.bands(s, st).map(b => [b[0], isFinite(b[1])?b[1]:null]);
     res[st] = {
-      eindBox3: round(b3[b3.length-1].netto),
-      eindBV:   round(bv[bv.length-1].netto),
-      delta:    round(R.delta(c.V, s, st)),
+      eindBox3: b3[b3.length-1].netto,
+      eindBV:   bv[bv.length-1].netto,
+      delta:    R.delta(c.V, s, st),
       bands:    bd,
-      ontleed:  {uitstel:round(o.uitstel), hvr:round(o.hvr), kosten:round(o.kosten),
-                 vast:round(o.vast), totaal:round(o.totaal)},
-      box3Jaren: b3.map(r => ({begin:round(r.begin), rend:round(r.rend),
-                               tax:round(r.tax), netto:round(r.netto)})),
-      bvJaren:   bv.map(r => ({begin:round(r.begin), rend:round(r.rend), kosten:round(r.kosten),
-                               vpb:round(r.vpb), stand:round(r.stand),
-                               latent:round(r.latent), netto:round(r.netto)})),
+      ontleed:  {uitstel:o.uitstel, hvr:o.hvr, kosten:o.kosten,
+                 vast:o.vast, totaal:o.totaal},
+      box3Jaren: b3.map(r => ({begin:r.begin, rend:r.rend,
+                               tax:r.tax, netto:r.netto})),
+      bvJaren:   bv.map(r => ({begin:r.begin, rend:r.rend, kosten:r.kosten,
+                               vpb:r.vpb, stand:r.stand,
+                               latent:r.latent, netto:r.netto})),
     };
   }
   return res;

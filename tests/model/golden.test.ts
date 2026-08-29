@@ -47,8 +47,8 @@ const cases: GoldenCase[] = golden;
 const stelsels: Stelsel[] = ["nu", "2028"];
 
 describe("golden values tegen de referentie-implementatie", () => {
-  it("dekt tien scenario's", () => {
-    expect(cases).toHaveLength(10);
+  it("dekt elf scenario's", () => {
+    expect(cases).toHaveLength(11);
   });
 
   for (const c of cases) {
@@ -64,10 +64,10 @@ describe("golden values tegen de referentie-implementatie", () => {
             const w = verwacht.box3Jaren[i];
             expect(w).toBeDefined();
             if (w === undefined) return;
-            expect(rij.begin).toBeCloseTo(w.begin, 2);
-            expect(rij.rend).toBeCloseTo(w.rend, 2);
-            expect(rij.tax).toBeCloseTo(w.tax, 2);
-            expect(rij.netto).toBeCloseTo(w.netto, 2);
+            expect(rij.begin).toBeCloseTo(w.begin, 6);
+            expect(rij.rend).toBeCloseTo(w.rend, 6);
+            expect(rij.tax).toBeCloseTo(w.tax, 6);
+            expect(rij.netto).toBeCloseTo(w.netto, 6);
           });
         });
 
@@ -78,18 +78,18 @@ describe("golden values tegen de referentie-implementatie", () => {
             const w = verwacht.bvJaren[i];
             expect(w).toBeDefined();
             if (w === undefined) return;
-            expect(rij.begin).toBeCloseTo(w.begin, 2);
-            expect(rij.rend).toBeCloseTo(w.rend, 2);
-            expect(rij.kosten).toBeCloseTo(w.kosten, 2);
-            expect(rij.vpb).toBeCloseTo(w.vpb, 2);
-            expect(rij.stand).toBeCloseTo(w.stand, 2);
-            expect(rij.latent).toBeCloseTo(w.latent, 2);
-            expect(rij.netto).toBeCloseTo(w.netto, 2);
+            expect(rij.begin).toBeCloseTo(w.begin, 6);
+            expect(rij.rend).toBeCloseTo(w.rend, 6);
+            expect(rij.kosten).toBeCloseTo(w.kosten, 6);
+            expect(rij.vpb).toBeCloseTo(w.vpb, 6);
+            expect(rij.stand).toBeCloseTo(w.stand, 6);
+            expect(rij.latent).toBeCloseTo(w.latent, 6);
+            expect(rij.netto).toBeCloseTo(w.netto, 6);
           });
         });
 
         it("reproduceert het verschil", () => {
-          expect(delta(c.input.V, s, stelsel)).toBeCloseTo(verwacht.delta, 2);
+          expect(delta(c.input.V, s, stelsel)).toBeCloseTo(verwacht.delta, 6);
         });
 
         it("reproduceert de kantelpunten", () => {
@@ -103,24 +103,24 @@ describe("golden values tegen de referentie-implementatie", () => {
             const boven = w[1];
             expect(typeof onder).toBe("number");
             if (typeof onder !== "number") return;
-            expect(b.from).toBeCloseTo(onder, 2);
+            expect(b.from).toBeCloseTo(onder, 6);
             if (boven === null || boven === undefined) {
               expect(b.to).toBeNull();
             } else {
               expect(b.to).not.toBeNull();
               if (b.to === null) return;
-              expect(b.to).toBeCloseTo(boven, 2);
+              expect(b.to).toBeCloseTo(boven, 6);
             }
           });
         });
 
         it("reproduceert de uitsplitsing", () => {
           const o = decompose(c.input.V, s, stelsel);
-          expect(o.uitstel).toBeCloseTo(verwacht.ontleed.uitstel, 2);
-          expect(o.hvr).toBeCloseTo(verwacht.ontleed.hvr, 2);
-          expect(o.kosten).toBeCloseTo(verwacht.ontleed.kosten, 2);
-          expect(o.vast).toBeCloseTo(verwacht.ontleed.vast, 2);
-          expect(o.totaal).toBeCloseTo(verwacht.ontleed.totaal, 2);
+          expect(o.uitstel).toBeCloseTo(verwacht.ontleed.uitstel, 6);
+          expect(o.hvr).toBeCloseTo(verwacht.ontleed.hvr, 6);
+          expect(o.kosten).toBeCloseTo(verwacht.ontleed.kosten, 6);
+          expect(o.vast).toBeCloseTo(verwacht.ontleed.vast, 6);
+          expect(o.totaal).toBeCloseTo(verwacht.ontleed.totaal, 6);
         });
       });
     }
