@@ -3,6 +3,7 @@ import { DEFAULTS, toInputs, type FormState } from "./state";
 import { breakevenBands } from "./model/compare";
 import { Inputs as InputsPanel } from "./components/Inputs";
 import { Verdict } from "./components/Verdict";
+import { WhyFold } from "./components/WhyFold";
 
 export default function App() {
   const [form, setForm] = useState<FormState>(DEFAULTS);
@@ -36,7 +37,8 @@ export default function App() {
         </div>
         <div>
           <Verdict inputs={inputs} stelsel={form.stelsel} bands={bands} />
-          {/* Tasks 10-14 */}
+          <WhyFold inputs={inputs} stelsel={form.stelsel} bands={bands} />
+          {/* Tasks 11-14 */}
         </div>
       </div>
       <button type="button" onClick={() => setForm(DEFAULTS)}>
