@@ -23,6 +23,16 @@ describe("kort", () => {
     expect(kort(25_000)).toBe("€25k");
   });
 
+  it("toont onder de tienduizend één decimaal, zodat 1.500 en 2.000 niet allebei €2k worden", () => {
+    expect(kort(1_500)).toBe("€1,5k");
+    expect(kort(2_000)).toBe("€2,0k");
+  });
+
+  it("laat de decimaal weg vanaf tienduizend", () => {
+    expect(kort(10_000)).toBe("€10k");
+    expect(kort(9_500)).toBe("€9,5k");
+  });
+
   it("kort miljoenen af met één decimaal", () => {
     expect(kort(1_200_000)).toBe("€1,2M");
   });

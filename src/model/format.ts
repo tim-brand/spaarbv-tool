@@ -18,7 +18,9 @@ export function kort(x: number): string {
   if (a >= 1e6) {
     return `${teken}€${(a / 1e6).toFixed(a >= 1e7 ? 0 : 1).replace(".", ",")}M`;
   }
-  if (a >= 1e3) return `${teken}€${Math.round(a / 1e3)}k`;
+  if (a >= 1e3) {
+    return `${teken}€${(a / 1e3).toFixed(a >= 1e4 ? 0 : 1).replace(".", ",")}k`;
+  }
   return `${teken}€${Math.round(a)}`;
 }
 
