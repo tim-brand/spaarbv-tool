@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { DEFAULTS, toInputs, type FormState } from "./state";
 import { breakevenBands } from "./model/compare";
+import { Inputs as InputsPanel } from "./components/Inputs";
 
 export default function App() {
   const [form, setForm] = useState<FormState>(DEFAULTS);
@@ -25,7 +26,13 @@ export default function App() {
       </p>
 
       <div className="grid">
-        <div>{/* Task 8: Inputs */}</div>
+        <div>
+          <InputsPanel
+            form={form}
+            onChange={setForm}
+            liqHint="Gespreid uitkeren benut het lage box 2-tarief vaker."
+          />
+        </div>
         <div>
           <p>
             kantelpunt:{" "}
