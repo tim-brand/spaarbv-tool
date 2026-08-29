@@ -4,6 +4,7 @@ import { breakevenBands } from "./model/compare";
 import { Inputs as InputsPanel } from "./components/Inputs";
 import { Verdict } from "./components/Verdict";
 import { WhyFold } from "./components/WhyFold";
+import { YearTable } from "./components/YearTable";
 
 export default function App() {
   const [form, setForm] = useState<FormState>(DEFAULTS);
@@ -38,7 +39,8 @@ export default function App() {
         <div>
           <Verdict inputs={inputs} stelsel={form.stelsel} bands={bands} />
           <WhyFold inputs={inputs} stelsel={form.stelsel} bands={bands} />
-          {/* Tasks 11-14 */}
+          <YearTable inputs={inputs} stelsel={form.stelsel} />
+          {/* Tasks 12-14 */}
         </div>
       </div>
       <button type="button" onClick={() => setForm(DEFAULTS)}>
