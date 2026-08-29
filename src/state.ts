@@ -11,6 +11,10 @@ export interface FormState {
   /** Ruwe tekst uit het invoerveld; pas bij het rekenen geparsed. */
   kostenText: string;
   oprichtText: string;
+  /** Ruwe tekst uit het inlegveld, zoals kostenText. */
+  inlegText: string;
+  /** Inlegperiode in jaren; null = de hele horizon. */
+  inlegJaren: number | null;
   liqJaren: number;
   stelsel: Stelsel;
 }
@@ -27,6 +31,8 @@ export const DEFAULTS: FormState = {
   rendPct: 7,
   kostenText: "1.200",
   oprichtText: "600",
+  inlegText: "0",
+  inlegJaren: null,
   liqJaren: 1,
   stelsel: "2028",
 };
@@ -55,8 +61,8 @@ export function toInputs(f: FormState): Inputs {
     kosten: parseNum(f.kostenText, DEFAULT_KOSTEN, MAX_BEDRAG),
     opricht: parseNum(f.oprichtText, DEFAULT_OPRICHT, MAX_BEDRAG),
     liqJaren: f.liqJaren,
-    inleg: 0,
-    inlegJaren: 0,
+    inleg: parseNum(f.inlegText, 0, MAX_BEDRAG),
+    inlegJaren: Math.min(Math.max(Math.floor(f.inlegJaren ?? f.T), 0), f.T),
     mult: f.partner ? 2 : 1,
     soort: f.soort,
   };
