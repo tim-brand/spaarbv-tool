@@ -73,6 +73,28 @@ describe("Verdict", () => {
     expect(document.querySelector(".tile.win-bv")).not.toBeNull();
   });
 
+  it("toont de bovengrens van een tweezijdige band", () => {
+    // Bij lage kosten over een lange horizon wint de BV alleen in een
+    // venster: erboven vallen de lage Vpb- en box 2-schijven weg.
+    paneel(
+      {
+        soort: "spaar",
+        V: 200_000,
+        T: 40,
+        r: 0.04,
+        d: 0.04,
+        g: 0,
+        kosten: 100,
+        opricht: 100,
+        liqJaren: 1,
+        mult: 1,
+      },
+      "2028",
+    );
+    expect(tekst("1.939.108")).toBeDefined();
+    expect(tekst("draait het weer om")).toBeDefined();
+  });
+
   it("zet de jij-markering op de logaritmische schaal", () => {
     paneel();
     const you = document.querySelector<HTMLElement>(".scale-you");
