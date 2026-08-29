@@ -43,8 +43,9 @@ h1 {
 
 .lede { max-width: 64ch; color: var(--ink-2); margin: 0 0 26px; }
 
-.grid { display: grid; grid-template-columns: 320px 1fr; gap: 22px; align-items: start; }
-@media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+.grid { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 22px; align-items: start; }
+.grid > * { min-width: 0; }
+@media (max-width: 900px) { .grid { grid-template-columns: minmax(0, 1fr); } }
 
 .card {
   background: var(--card); border: 1px solid var(--line);
