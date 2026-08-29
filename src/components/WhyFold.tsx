@@ -1,4 +1,4 @@
-import { decompose } from "../model/compare";
+import { V_MIN, decompose } from "../model/compare";
 import { eur } from "../model/format";
 import type { Band, Inputs, Stelsel } from "../model/types";
 
@@ -15,7 +15,14 @@ function teken(x: number): string {
 export function WhyFold({ inputs, stelsel, bands }: Props) {
   const eigen = decompose(inputs.V, inputs, stelsel);
   const band = bands[0];
-  const kantel = band === undefined ? null : decompose(band.from, inputs, stelsel);
+
+  /* Een ondergrens die exact op de scanvloer ligt betekent: de BV wint al
+     bij het kleinste vermogen dat we doorrekenen. Er is dan geen echt
+     kantelpunt in beeld — de band is afgekapt, niet gekruist — dus de
+     kantelpuntkolom zou een gelijkheid tonen die er niet is. */
+  const afgekapt = band !== undefined && band.from === V_MIN;
+  const kantel =
+    band === undefined || afgekapt ? null : decompose(band.from, inputs, stelsel);
 
   const vrijstellingWoord =
     stelsel === "2028" ? "heffingsvrij resultaat" : "heffingsvrij vermogen";
@@ -75,6 +82,19 @@ export function WhyFold({ inputs, stelsel, bands }: Props) {
               Er is hier geen kantelpunt: bij geen enkel vermogen wordt het uitstel
               groter dan wat de BV kost. Verleng de horizon, verhoog het rendement
               of verlaag de kosten om te zien wat ervoor nodig is.
+            </>
+          ) : afgekapt ? (
+            <>
+              In dit scenario is er geen kantelpunt te zien: de BV wint al bij het
+              kleinste vermogen in deze vergelijking, {eur(V_MIN)}. Het uitstel
+              weegt hier bij elk doorgerekend vermogen op tegen de vaste lasten.
+              {band.to !== null && (
+                <>
+                  {" "}
+                  Boven {eur(band.to)} draait het wél om, omdat je dan in de
+                  hoogste Vpb- en box 2-schijven belandt.
+                </>
+              )}
             </>
           ) : (
             <>

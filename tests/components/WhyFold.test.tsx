@@ -66,6 +66,18 @@ describe("WhyFold", () => {
     expect(heeft("heffingsvrij vermogen")).toBeDefined();
   });
 
+  it("claimt geen kantelpunt als de BV al bij het kleinste vermogen wint", () => {
+    // T 40 en 12% rendement: de BV wint al bij € 25.000, dus de ondergrens
+    // van de band is de scanvloer — geen echt kantelpunt. De oude tekst
+    // beweerde daar "precies even groot" naast twee zichtbaar ongelijke
+    // bedragen (delta bij € 25.000 is hier ruim € 83.000).
+    paneel({ T: 40, r: 0.12, g: 0.12 });
+    expect(document.querySelector(".mini.solo")).not.toBeNull();
+    const tekst = document.body.textContent ?? "";
+    expect(tekst).not.toContain("precies even groot");
+    expect(heeft("al bij het kleinste vermogen")).toBeDefined();
+  });
+
   it("valt terug op één kolom als er geen kantelpunt is", () => {
     paneel({ r: 0.02, d: 0.02, g: 0, soort: "spaar" });
     expect(document.querySelector(".mini.solo")).not.toBeNull();
