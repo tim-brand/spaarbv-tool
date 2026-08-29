@@ -48,6 +48,8 @@ export interface Box3Year {
 /** Eén jaar in de BV-route. */
 export interface BvYear {
   begin: number;
+  /** Gestorte hoofdsom van dat jaar (12 × maandinleg), 0 buiten de inlegperiode. */
+  inleg: number;
   rend: number;
   /** Kosten van dat jaar, inclusief oprichting in jaar 1. */
   kosten: number;

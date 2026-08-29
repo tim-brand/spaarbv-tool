@@ -1,4 +1,5 @@
 import { PARAMS_2026, ab, vpb, type TaxParams } from "./params";
+import { jaarInleg } from "./inleg";
 import type { BvYear, Inputs } from "./types";
 
 export interface LiquidationResult {
@@ -83,13 +84,17 @@ export function netIfLiquidatedNow(
  * er verkocht; de daarbij gerealiseerde winst schuift door naar het volgende
  * boekjaar en de boekwaarde daalt naar rato.
  *
+ * Maandelijkse stortingen zijn agiostortingen: zij voeren de boekwaarde en
+ * verkrijgingsprijs op met hun hoofdsom, zodat die onbelast terugkomen bij
+ * liquidatie; hun directe rendement wordt in-jaar belast, hun koersgroei loopt uit.
+ *
  * `netto` per rij is wat je overhoudt als je de BV in dát jaar zou liquideren
  * en uitkeren — zo zijn beide routes elk jaar appels met appels.
  */
 export function simulateBV(V: number, s: Inputs, p: TaxParams = PARAMS_2026): BvYear[] {
   let A = V; // marktwaarde
   let C = V; // boekwaarde
-  const VK = V; // verkrijgingsprijs
+  let vk = V; // verkrijgingsprijs
 
   let verlies = 0;
   let pending = 0;
@@ -97,8 +102,17 @@ export function simulateBV(V: number, s: Inputs, p: TaxParams = PARAMS_2026): Bv
 
   for (let i = 0; i < s.T; i += 1) {
     const begin = A;
-    const div = begin * s.d;
-    A = begin * (1 + s.g);
+    const storting =
+      i < s.inlegJaren ? jaarInleg(s.inleg, s.r) : { hoofdsom: 0, groei: 0 };
+    // Splitsing van de eerstejaarsgroei naar rato van d en g. Bij r = 0 is
+    // de groei 0, dus valt er niets te splitsen.
+    const inlegDiv = s.r === 0 ? 0 : storting.groei * (s.d / s.r);
+    const inlegKoers = storting.groei - inlegDiv;
+
+    const div = begin * s.d + inlegDiv;
+    A = begin * (1 + s.g) + storting.hoofdsom + inlegKoers;
+    C += storting.hoofdsom;
+    vk += storting.hoofdsom;
 
     const gerealiseerd = pending;
     pending = 0;
@@ -132,10 +146,11 @@ export function simulateBV(V: number, s: Inputs, p: TaxParams = PARAMS_2026): Bv
     if (A < 0) A = 0;
     if (C < 0) C = 0;
 
-    const liq = netIfLiquidatedNow(A, C, VK, pending, verlies, s, p);
+    const liq = netIfLiquidatedNow(A, C, vk, pending, verlies, s, p);
     rows.push({
       begin,
-      rend: begin * s.r,
+      inleg: storting.hoofdsom,
+      rend: begin * s.r + storting.groei,
       kosten,
       vpb: betaaldeVpb,
       stand: A,
