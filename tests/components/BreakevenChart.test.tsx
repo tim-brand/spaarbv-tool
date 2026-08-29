@@ -99,4 +99,34 @@ describe("BreakevenChart", () => {
     expect(document.body.textContent).toContain("en tot");
     expect(document.body.textContent).toContain("€1,9M");
   });
+
+  it("gebruikt op een smal scherm een Label (rect + text) voor de reeksnamen, waar het op een breed scherm kale tekst is", () => {
+    // Overschrijft de matchMedia-stub uit beforeEach alleen voor deze test,
+    // zodat useIsNarrow() true teruggeeft. afterEach(vi.unstubAllGlobals)
+    // ruimt dit weer op, en de volgende beforeEach zet 'm terug op breed —
+    // de andere tests blijven dus in breed-modus draaien.
+    vi.stubGlobal("matchMedia", () => ({
+      matches: true,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    }));
+    grafiek();
+
+    // Op smal scherm renderen de reeksnamen (bijv. "vs. 2028") via <Label>,
+    // dus als <rect> gevolgd door <text>. Op breed scherm is het kale
+    // <text>, zonder <rect> ervoor — het element-type zelf verandert, dus
+    // dit is een structurele smal-specifieke uitkomst, geen cosmetische.
+    const naamTekst = Array.from(document.querySelectorAll("svg text")).find(
+      (t) => t.textContent === "vs. 2028",
+    );
+    expect(naamTekst).not.toBeUndefined();
+    expect(naamTekst?.previousElementSibling?.tagName).toBe("rect");
+
+    // Tweede, onafhankelijke discriminator: op smal scherm toont de x-as
+    // 4 tickwaarden (X_TICKS_SMAL) in plaats van de volle 8.
+    const tickLabels = Array.from(
+      document.querySelectorAll('svg text[text-anchor="middle"].ax'),
+    );
+    expect(tickLabels.length).toBeLessThanOrEqual(4);
+  });
 });
