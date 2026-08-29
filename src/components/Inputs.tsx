@@ -1,5 +1,5 @@
 import { eur, formatNumberNl, parseNum, pct } from "../model/format";
-import type { Soort, Stelsel } from "../model/types";
+import type { Soort } from "../model/types";
 import {
   DEFAULT_KOSTEN,
   DEFAULT_OPRICHT,
@@ -173,7 +173,7 @@ export function Inputs({ form, onChange, liqHint }: Props) {
           <div className="seg" role="group" aria-labelledby="stelsel-label">
             <button
               type="button" aria-pressed={form.stelsel === "2028"}
-              onClick={() => set("stelsel", "2028" satisfies Stelsel)}
+              onClick={() => set("stelsel", "2028")}
             >
               Nieuw stelsel
               <br />
@@ -181,7 +181,7 @@ export function Inputs({ form, onChange, liqHint }: Props) {
             </button>
             <button
               type="button" aria-pressed={form.stelsel === "nu"}
-              onClick={() => set("stelsel", "nu" satisfies Stelsel)}
+              onClick={() => set("stelsel", "nu")}
             >
               Huidig stelsel
               <br />
