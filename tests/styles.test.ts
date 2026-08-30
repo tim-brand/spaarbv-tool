@@ -54,3 +54,27 @@ describe("styles.css - grid blowout regressie", () => {
     expect(css).toMatch(/\.grid\s*>\s*\*\s*{[^}]*min-width:\s*0/);
   });
 });
+
+describe("styles.css - voorpagina-ontwerptaal", () => {
+  const ruweCss = fs.readFileSync(path.join(__dirname, "../src/styles.css"), "utf-8");
+  const css = zonderCommentaar(ruweCss);
+
+  it("gebruikt de kranttokens", () => {
+    expect(css).toContain("--paper: #faf7f0");
+    expect(css).toContain("--ink: #191613");
+    expect(css).toContain("--bv: #27506b");
+    expect(css).toContain("--box3: #39586e");
+    expect(css).toContain("--neg: #8c2f24");
+  });
+
+  it("zet Newsreader als displayletter en Archivo voor labels", () => {
+    expect(css).toMatch(/--display:\s*"Newsreader"/);
+    expect(css).toMatch(/--labels:\s*"Archivo"/);
+    expect(css).not.toContain("Space Grotesk");
+  });
+
+  it("houdt het rekenpaneel rechts met een sticky kolom", () => {
+    expect(css).toMatch(/\.grid\s*{[^}]*grid-template-areas/);
+    expect(css).toMatch(/\.paneel-kolom\s*{[^}]*position:\s*sticky/);
+  });
+});
