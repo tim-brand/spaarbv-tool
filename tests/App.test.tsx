@@ -81,4 +81,18 @@ describe("App", () => {
       screen.getByText("Gespreid uitkeren benut het lage box 2-tarief vaker."),
     ).toBeDefined();
   });
+
+  it("linkt in de masthead naar de broncode", () => {
+    render(<App />);
+    const link = screen.getByRole("link", { name: /broncode op GitHub/ });
+    expect(link.getAttribute("href")).toBe("https://github.com/tim-brand/spaarbv-tool");
+  });
+
+  it("toont de drie voetnoten onderaan", () => {
+    render(<App />);
+    const strook = document.querySelector(".voetnoten");
+    expect(strook).not.toBeNull();
+    expect(strook?.textContent).toContain("Geen advies");
+    expect(strook?.textContent).toContain("wetsvoorstel");
+  });
 });
