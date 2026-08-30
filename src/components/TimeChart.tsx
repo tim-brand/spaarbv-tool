@@ -127,7 +127,7 @@ export function TimeChart({ inputs, stelsel }: Props) {
         {!smal && (
           <>
             <Label x={M.l + 6} y={y0 - 7} text="↑ BV staat voor" color={KLEUR.bvTekst} narrow={false} />
-            <Label x={M.l + 6} y={y0 + 16} text="↓ BV staat achter" color={KLEUR.box3} narrow={false} />
+            <Label x={M.l + 6} y={y0 + 16} text="↓ BV staat achter" color={KLEUR.box3Zacht} narrow={false} />
           </>
         )}
 
@@ -167,7 +167,7 @@ export function TimeChart({ inputs, stelsel }: Props) {
             <circle cx={X(dalJaar)} cy={Y(dal)} r={4} fill={KLEUR.box3} />
             <Label
               x={X(dalJaar)} y={Y(dal) + (smal ? 26 : 20)}
-              text={dalTekst} color={KLEUR.box3}
+              text={dalTekst} color={KLEUR.box3Zacht}
               anchor={dalAnchor} narrow={smal}
             />
           </>
@@ -180,7 +180,7 @@ export function TimeChart({ inputs, stelsel }: Props) {
         {smal && (
           <>
             <Label x={M.l + 6} y={y0 - 11} text="↑ BV staat voor" color={KLEUR.bvTekst} narrow />
-            <Label x={M.l + 6} y={y0 + 24} text="↓ BV staat achter" color={KLEUR.box3} narrow />
+            <Label x={M.l + 6} y={y0 + 24} text="↓ BV staat achter" color={KLEUR.box3Zacht} narrow />
           </>
         )}
       </svg>
