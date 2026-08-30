@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,700;1,6..72,400&family=Archivo:wght@500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: "Newsreader", Georgia, "Times New Roman", serif; }
+    a { color: #27506b; } a:hover { color: #16324a; }
+  </style>
+</helmet>
+<div style="width: 1280px; min-height: 1400px; background: #faf7f0; color: #191613; display: flex; flex-direction: column;">
+
+  <div style="border-bottom: 3px double #191613; padding: 36px 64px 20px; display: flex; flex-direction: column; gap: 10px;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+      <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: #6e675c;">Beleggen in de BV of privé · een open rekentool</span>
+      <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.06em; color: #6e675c;">Peiljaar 2026 · <span style="color: #27506b;">broncode op GitHub</span></span>
+    </div>
+    <h1 style="margin: 0; font-size: 76px; line-height: 1.02; font-weight: 700; letter-spacing: -0.015em; max-width: 18ch;">Vanaf welk vermogen wordt een BV interessant?</h1>
+  </div>
+
+  <div style="display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 48px; padding: 30px 64px 56px; align-items: start;">
+
+    <div style="display: flex; flex-direction: column; gap: 26px;">
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #6e675c;">Uitkomst bij jouw cijfers</span>
+        <span style="font-size: 30px; font-weight: 500; font-style: italic; color: #48423a;">Een BV loont vanaf</span>
+        <span style="font-size: 100px; line-height: 1.02; font-weight: 700; letter-spacing: -0.02em; color: #27506b;">&euro; 490.469</span>
+        <span style="font-size: 18px; font-style: italic; color: #48423a; margin-top: 8px; max-width: 54ch;">Privé houd je &euro; 572.400 over, via de BV &euro; 549.100 &mdash; box 3 wint hier nog met &euro; 23.300.</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <svg width="100%" height="300" viewBox="0 0 770 300" style="display: block;">
+          <path d="M30 224 C 210 213, 340 163, 760 42 L 760 254 L 30 254 Z" fill="#39586e" fill-opacity="0.10"/>
+          <path d="M30 241 C 210 234, 340 185, 760 56 L 760 254 L 30 254 Z" fill="#27506b" fill-opacity="0.10"/>
+          <line x1="30" y1="254" x2="760" y2="254" stroke="#191613" stroke-width="1.5"/>
+          <line x1="30" y1="254" x2="30" y2="22" stroke="#191613" stroke-width="1.5"/>
+          <line x1="395" y1="254" x2="395" y2="38" stroke="#a49a88" stroke-width="1" stroke-dasharray="3 4"/>
+          <path d="M30 224 C 210 213, 340 163, 760 42" fill="none" stroke="#39586e" stroke-width="3"/>
+          <path d="M30 241 C 210 234, 340 185, 760 56" fill="none" stroke="#27506b" stroke-width="3" stroke-dasharray="8 5"/>
+          <text x="600" y="64" font-size="15" font-style="italic" fill="#39586e">privé, box 3</text>
+          <text x="612" y="106" font-size="15" font-style="italic" fill="#27506b">via de BV</text>
+          <text x="403" y="54" font-size="13" fill="#6e675c">kantelpunt &euro; 490.469</text>
+          <text x="30" y="280" font-size="13" fill="#6e675c">&euro; 25.000</text>
+          <text x="676" y="280" font-size="13" fill="#6e675c">&euro; 5.000.000</text>
+        </svg>
+        <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 12px; color: #6e675c;">Netto eindvermogen na 20 jaar, per startvermogen (logaritmische schaal). Bron: eigen berekening.</span>
+      </div>
+
+      <p style="font-size: 17.5px; line-height: 1.7; margin: 0; max-width: 62ch; border-top: 1px solid #d8d2c4; padding-top: 18px;">Het voordeel van de BV is uitstel: koerswinst mag blijven staan tot je verkoopt, terwijl box 3 vanaf 2028 elk jaar het werkelijke rendement belast. Onder het kantelpunt betaal je vooral de vaste lasten; erboven groeit het voordeel elk jaar.</p>
+
+      <div style="border-top: 1px solid #d8d2c4; padding-top: 14px; display: flex; gap: 26px; font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 12.5px; color: #6e675c;">
+        <span>&#9312; Geen advies &mdash; een rekenmodel met jouw aannames.</span>
+        <span>&#9313; Alle aannames en broncode staan open.</span>
+        <span>&#9314; Wetgeving 2028 is nog een wetsvoorstel.</span>
+      </div>
+    </div>
+
+<div style="border: 1px solid #191613; outline: 1px solid #191613; outline-offset: 3px; background: #fffdf8; padding: 24px 26px; display: flex; flex-direction: column; gap: 22px;">
+      <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #6e675c;">Rekenpaneel · speel mee</span>
+
+      <div style="display: flex; flex-direction: column; gap: 9px; border-top: 2px solid #191613; padding-top: 10px;">
+        <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #6e675c;">Vermogen nu</span>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 44px; height: 44px; border: 1px solid #191613; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; line-height: 1; background: #fffdf8;">&#8722;</div>
+          <span style="flex: 1; text-align: center; font-size: 26px; font-weight: 700;">&euro; 200.000</span>
+          <div style="width: 44px; height: 44px; border: 1px solid #191613; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; line-height: 1; background: #fffdf8;">+</div>
+        </div>
+        <div style="height: 22px; position: relative;">
+          <div style="position: absolute; left: 0; right: 0; top: 10px; height: 2px; background: #d8d2c4;"></div>
+          <div style="position: absolute; left: 0; top: 10px; height: 2px; width: 34%; background: #27506b;"></div>
+          <div style="position: absolute; left: 32%; top: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fffdf8; border: 2px solid #27506b;"></div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 9px; border-top: 2px solid #191613; padding-top: 10px;">
+        <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #6e675c;">Inleg per maand</span>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 44px; height: 44px; border: 1px solid #191613; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; line-height: 1; background: #fffdf8;">&#8722;</div>
+          <span style="flex: 1; text-align: center; font-size: 26px; font-weight: 700;">&euro; 500</span>
+          <div style="width: 44px; height: 44px; border: 1px solid #191613; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; line-height: 1; background: #fffdf8;">+</div>
+        </div>
+        <div style="height: 22px; position: relative;">
+          <div style="position: absolute; left: 0; right: 0; top: 10px; height: 2px; background: #d8d2c4;"></div>
+          <div style="position: absolute; left: 0; top: 10px; height: 2px; width: 18%; background: #27506b;"></div>
+          <div style="position: absolute; left: 16%; top: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fffdf8; border: 2px solid #27506b;"></div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 9px; border-top: 2px solid #191613; padding-top: 10px;">
+        <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #6e675c;">Horizon</span>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 44px; height: 44px; border: 1px solid #191613; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; line-height: 1; background: #fffdf8;">&#8722;</div>
+          <span style="flex: 1; text-align: center; font-size: 26px; font-weight: 700;">20 jaar</span>
+          <div style="width: 44px; height: 44px; border: 1px solid #191613; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; line-height: 1; background: #fffdf8;">+</div>
+        </div>
+        <div style="height: 22px; position: relative;">
+          <div style="position: absolute; left: 0; right: 0; top: 10px; height: 2px; background: #d8d2c4;"></div>
+          <div style="position: absolute; left: 0; top: 10px; height: 2px; width: 43%; background: #27506b;"></div>
+          <div style="position: absolute; left: 41%; top: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fffdf8; border: 2px solid #27506b;"></div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 9px; border-top: 2px solid #191613; padding-top: 10px;">
+        <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #6e675c;">Rendement per jaar</span>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 44px; height: 44px; border: 1px solid #191613; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; line-height: 1; background: #fffdf8;">&#8722;</div>
+          <span style="flex: 1; text-align: center; font-size: 26px; font-weight: 700;">7,0%</span>
+          <div style="width: 44px; height: 44px; border: 1px solid #191613; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; line-height: 1; background: #fffdf8;">+</div>
+        </div>
+        <div style="height: 22px; position: relative;">
+          <div style="position: absolute; left: 0; right: 0; top: 10px; height: 2px; background: #d8d2c4;"></div>
+          <div style="position: absolute; left: 0; top: 10px; height: 2px; width: 56%; background: #27506b;"></div>
+          <div style="position: absolute; left: 54%; top: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fffdf8; border: 2px solid #27506b;"></div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px; border-top: 2px solid #191613; padding-top: 12px;">
+        <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #6e675c;">Stelsel</span>
+        <div style="display: flex; gap: 8px;">
+          <div style="flex: 1; min-height: 44px; display: flex; align-items: center; justify-content: center; background: #191613; color: #fffdf8; font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 13px; font-weight: 600;">Nieuw · 2028</div>
+          <div style="flex: 1; min-height: 44px; display: flex; align-items: center; justify-content: center; border: 1px solid #191613; color: #48423a; font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 13px; font-weight: 600;">Huidig · 2026</div>
+        </div>
+        <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 12px; color: #6e675c; line-height: 1.5;">BV-kosten &euro; 1.200/jaar · oprichting &euro; 600 · uitkeren in 1 keer.</span>
+      </div>
+    </div>
+  
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1280,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
