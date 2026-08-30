@@ -97,8 +97,17 @@ export function BreakevenChart({ inputs, stelsel, bands }: Props) {
   // ruimte" niet meer. Desktop (hieronder) blijft de oude vaste drempel
   // gebruiken.
   const jijHalf = smal ? labelBreedte(jijTekst, true) / 2 : 110;
+  // Op smal scherm staan de reeksnamen ("vs. 2028" / "vs. nu") ín de
+  // plotruimte, vlak vóór x1 (zie de Label-aanroepen hieronder) — op breed
+  // scherm juist erbuiten (x1 + 7), dus daar is geen zone nodig. Bij een
+  // vlakke lijn (bijv. spaargeld met een laag rendement, "geen kantelpunt")
+  // kan de "jij"-stip qua hoogte samenvallen met zo'n reeksnaam; reserveer
+  // daarom die hoek zodat "middel" of "eind" het label er niet overheen legt.
+  const eindZone = smal
+    ? Math.max(labelBreedte(naam[stelsel], true), labelBreedte(naam[ander], true)) + 8
+    : 0;
   const stipAnchor: "start" | "middle" | "end" =
-    stipX + jijHalf > x1 ? "end" : stipX - jijHalf < x0 ? "start" : "middle";
+    stipX + jijHalf > x1 - eindZone ? "end" : stipX - jijHalf < x0 ? "start" : "middle";
 
   const eersteWaarde = ptsA[0]?.[1] ?? 0;
 

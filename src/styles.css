@@ -195,6 +195,21 @@ summary::-webkit-details-marker { display: none; }
 .mini-r.kop em { font-family: var(--labels); font-size: 11px; color: var(--ink-2); font-style: normal; text-align: right; text-transform: uppercase; letter-spacing: 0.06em; }
 .mini-r b { font-family: var(--display); text-align: right; white-space: nowrap; }
 .mini-r.tot > * { border-top: 1px solid var(--ink); font-weight: 700; }
+
+/* Op smal scherm laten twee "auto"-brede bedragkolommen te weinig ruimte
+   over voor de omschrijving (die viel terug tot één woord per regel).
+   Zet de rij daarom om: omschrijving op de volle breedte, de bedragen
+   eronder naast elkaar. */
+@media (max-width: 640px) {
+  .mini { display: block; }
+  .mini-r { display: flex; flex-wrap: wrap; column-gap: 18px; row-gap: 2px; justify-content: space-between; }
+  .mini-r > span, .mini-r > em { flex: 1 0 100%; }
+  .mini-r.tot { border-top: 1px solid var(--ink); margin-top: 4px; padding-top: 4px; }
+  .mini-r.tot > * { border-top: 0; }
+  /* .mini.solo verbergt de derde kolom; het enige overblijvende bedrag
+     hoort dan rechts te staan, net als voorheen in de auto-kolom. */
+  .mini.solo .mini-r > b, .mini.solo .mini-r > em { margin-left: auto; }
+}
 .waarom-zin, .bal-sum { font-size: 14.5px; color: var(--dim); margin: 0; }
 .bal-sum { margin-top: 12px; }
 
