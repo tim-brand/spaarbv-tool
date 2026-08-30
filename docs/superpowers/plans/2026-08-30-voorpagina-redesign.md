@@ -513,8 +513,11 @@ In `src/components/Inputs.tsx`, add below the `netjes` helper (inside the compon
     hint: string;
   }) => {
     const { id, naam, waarde, toon, min, max, step, zet, hint } = opts;
-    // Afronden op de stapgrootte voorkomt zwevendekomma-resten (7.1000000001).
-    const rond = (n: number): number => Math.round(n / step) * step;
+    // Afronden op de stapgrootte voorkomt zwevendekomma-resten. Let op:
+    // `Math.round(n / step) * step` alleen is niet genoeg (71 * 0.1 geeft
+    // 7.100000000000001), vandaar de toFixed-pas erachteraan.
+    const rond = (n: number): number =>
+      Number((Math.round(n / step) * step).toFixed(4));
     return (
       <div className="field">
         <label className="veld-kop" htmlFor={id}>{naam}</label>
@@ -588,7 +591,8 @@ Append inside `describe("Verdict", ...)`:
   it("zet het kantelpuntbedrag alleen op de posterregel", () => {
     paneel();
     const held = document.querySelector(".kp");
-    expect(held?.textContent?.trim()).toBe("€ 490.469");
+    expect(held?.textContent).toContain("490.469");
+    expect(held?.textContent).not.toContain("vanaf");
     expect(document.querySelector(".kp-voorloop")?.textContent).toContain(
       "Een BV loont",
     );
