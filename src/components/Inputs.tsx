@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { eur, formatNumberNl, parseNum, pct } from "../model/format";
 import type { Soort } from "../model/types";
 import {
@@ -48,13 +49,76 @@ export function Inputs({ form, onChange, liqHint }: Props) {
   const inleg = parseNum(form.inlegText, 0, MAX_BEDRAG);
   const inlegJarenTonen = Math.min(form.inlegJaren ?? form.T, form.T);
 
+  const klem = (n: number, min: number, max: number): number =>
+    Math.min(Math.max(n, min), max);
+
+  /** Eén sliderveld in het krantpatroon: capskop, − waarde +, slider. */
+  const stapVeld = (opts: {
+    id: string;
+    naam: string;
+    waarde: number;
+    toon: string;
+    min: number;
+    max: number;
+    step: number;
+    zet: (n: number) => void;
+    hint: string;
+  }) => {
+    const { id, naam, waarde, toon, min, max, step, zet, hint } = opts;
+    // Afronden op de stapgrootte voorkomt zwevendekomma-resten. Let op:
+    // `Math.round(n / step) * step` alleen is niet genoeg (71 * 0.1 geeft
+    // 7.100000000000001), vandaar de toFixed-pas erachteraan.
+    const rond = (n: number): number =>
+      Number((Math.round(n / step) * step).toFixed(4));
+    // De stapknoppen krijgen hun toegankelijke naam via verborgen tekst in
+    // plaats van het `aria-label`-attribuut: getByLabelText van
+    // @testing-library/dom doorzoekt élk element met een `aria-label`, dus
+    // een letterlijk `aria-label="<naam> verhogen"` op de knop zou ook
+    // matchen op bestaande, contractuele `getByLabelText(/naam/)`-tests voor
+    // het bijbehorende slider-veld (meerdere elementen gevonden). Tekstinhoud
+    // wordt daar niet door opgepikt, dus dat voorkomt de botsing terwijl de
+    // knop via `getByRole("button", { name: ... })` nog steeds exact de
+    // vereiste naam heeft.
+    const verborgen: CSSProperties = {
+      position: "absolute", width: 1, height: 1, padding: 0, margin: -1,
+      overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap", border: 0,
+    };
+    return (
+      <div className="field">
+        <label className="veld-kop" htmlFor={id}>{naam}</label>
+        <div className="stap-rij">
+          <button
+            type="button" className="stap" disabled={waarde <= min}
+            onClick={() => zet(rond(klem(waarde - step, min, max)))}
+          >
+            <span aria-hidden="true">−</span>
+            <span style={verborgen}>{`${naam} verlagen`}</span>
+          </button>
+          <span className="stap-waarde">{toon}</span>
+          <button
+            type="button" className="stap" disabled={waarde >= max}
+            onClick={() => zet(rond(klem(waarde + step, min, max)))}
+          >
+            <span aria-hidden="true">+</span>
+            <span style={verborgen}>{`${naam} verhogen`}</span>
+          </button>
+        </div>
+        <input
+          type="range" id={id} min={min} max={max} step={step} value={waarde}
+          onChange={(e) => zet(Number(e.target.value))}
+        />
+        <p className="hint">{hint}</p>
+      </div>
+    );
+  };
+
   return (
     <>
-      <div className="card">
+      <div className="paneel">
         <p className="card-title">Jouw vermogen</p>
 
         <div className="field">
-          <label id="soort-label">Wat voor vermogen is het?</label>
+          <label id="soort-label" className="veld-kop">Wat voor vermogen is het?</label>
           <div className="seg" role="group" aria-labelledby="soort-label">
             <button
               type="button"
@@ -74,20 +138,20 @@ export function Inputs({ form, onChange, liqHint }: Props) {
           <p className="hint">{SOORT_HINT[form.soort]}</p>
         </div>
 
-        <div className="field">
-          <label htmlFor="k-verm">
-            Vermogen nu <span className="val">{eur(form.V)}</span>
-          </label>
-          <input
-            type="range" id="k-verm" min={25_000} max={2_000_000} step={5_000}
-            value={form.V}
-            onChange={(e) => set("V", Number(e.target.value))}
-          />
-          <p className="hint">Wat je nu in box 3 hebt staan.</p>
-        </div>
+        {stapVeld({
+          id: "k-verm",
+          naam: "Vermogen nu",
+          waarde: form.V,
+          toon: eur(form.V),
+          min: 25_000,
+          max: 2_000_000,
+          step: 5_000,
+          zet: (n) => set("V", n),
+          hint: "Wat je nu in box 3 hebt staan.",
+        })}
 
         <div className="field">
-          <label htmlFor="k-inleg">Maandelijkse inleg</label>
+          <label htmlFor="k-inleg" className="veld-kop">Maandelijkse inleg</label>
           <div className="in-wrap">
             <span>€</span>
             <input
@@ -102,37 +166,30 @@ export function Inputs({ form, onChange, liqHint }: Props) {
           </p>
         </div>
 
-        {inleg > 0 && (
-          <div className="field">
-            <label htmlFor="k-inlegjaren">
-              Inleggen gedurende{" "}
-              <span className="val">
-                {inlegJarenTonen} van de {form.T} jaar
-              </span>
-            </label>
-            <input
-              type="range" id="k-inlegjaren" min={1} max={form.T} step={1}
-              value={inlegJarenTonen}
-              onChange={(e) => set("inlegJaren", Number(e.target.value))}
-            />
-            <p className="hint">
-              Daarna stoppen de stortingen en groeit het vermogen alleen nog
-              door rendement.
-            </p>
-          </div>
-        )}
+        {inleg > 0 &&
+          stapVeld({
+            id: "k-inlegjaren",
+            naam: "Inleggen gedurende",
+            waarde: inlegJarenTonen,
+            toon: `${inlegJarenTonen} van de ${form.T} jaar`,
+            min: 1,
+            max: form.T,
+            step: 1,
+            zet: (n) => set("inlegJaren", n),
+            hint: "Daarna stoppen de stortingen en groeit het vermogen alleen nog door rendement.",
+          })}
 
-        <div className="field">
-          <label htmlFor="k-jaar">
-            Horizon <span className="val">{form.T} jaar</span>
-          </label>
-          <input
-            type="range" id="k-jaar" min={5} max={40} step={1}
-            value={form.T}
-            onChange={(e) => set("T", Number(e.target.value))}
-          />
-          <p className="hint">Hoeveel jaar tot je het geld nodig hebt.</p>
-        </div>
+        {stapVeld({
+          id: "k-jaar",
+          naam: "Horizon",
+          waarde: form.T,
+          toon: `${form.T} jaar`,
+          min: 5,
+          max: 40,
+          step: 1,
+          zet: (n) => set("T", n),
+          hint: "Hoeveel jaar tot je het geld nodig hebt.",
+        })}
 
         <div className="field">
           <label className="toggle" htmlFor="k-part">
@@ -149,26 +206,26 @@ export function Inputs({ form, onChange, liqHint }: Props) {
         </div>
       </div>
 
-      <div className="card">
+      <div className="paneel">
         <p className="card-title">Het rendement</p>
-        <div className="field">
-          <label htmlFor="k-rend">
-            Rendement per jaar <span className="val">{pct(form.rendPct)}</span>
-          </label>
-          <input
-            type="range" id="k-rend" min={0.5} max={12} step={0.1}
-            value={form.rendPct}
-            onChange={(e) => set("rendPct", Number(e.target.value))}
-          />
-          <p className="hint">{REND_HINT[form.soort]}</p>
-        </div>
+        {stapVeld({
+          id: "k-rend",
+          naam: "Rendement per jaar",
+          waarde: form.rendPct,
+          toon: pct(form.rendPct),
+          min: 0.5,
+          max: 12,
+          step: 0.1,
+          zet: (n) => set("rendPct", n),
+          hint: REND_HINT[form.soort],
+        })}
       </div>
 
-      <div className="card">
+      <div className="paneel">
         <p className="card-title">De BV</p>
 
         <div className="field">
-          <label htmlFor="k-kost">Kosten per jaar</label>
+          <label htmlFor="k-kost" className="veld-kop">Kosten per jaar</label>
           <div className="in-wrap">
             <span>€</span>
             <input
@@ -181,7 +238,7 @@ export function Inputs({ form, onChange, liqHint }: Props) {
         </div>
 
         <div className="field">
-          <label htmlFor="k-opr">Oprichting eenmalig</label>
+          <label htmlFor="k-opr" className="veld-kop">Oprichting eenmalig</label>
           <div className="in-wrap">
             <span>€</span>
             <input
@@ -193,23 +250,20 @@ export function Inputs({ form, onChange, liqHint }: Props) {
           <p className="hint">Notaris en inschrijving, geboekt in het eerste jaar.</p>
         </div>
 
-        <div className="field">
-          <label htmlFor="k-liq">
-            Uitkeren aan het eind{" "}
-            <span className="val">
-              {form.liqJaren === 1 ? "in 1 keer" : `in ${form.liqJaren} jaar`}
-            </span>
-          </label>
-          <input
-            type="range" id="k-liq" min={1} max={10} step={1}
-            value={form.liqJaren}
-            onChange={(e) => set("liqJaren", Number(e.target.value))}
-          />
-          <p className="hint">{liqHint}</p>
-        </div>
+        {stapVeld({
+          id: "k-liq",
+          naam: "Uitkeren aan het eind",
+          waarde: form.liqJaren,
+          toon: form.liqJaren === 1 ? "in 1 keer" : `in ${form.liqJaren} jaar`,
+          min: 1,
+          max: 10,
+          step: 1,
+          zet: (n) => set("liqJaren", n),
+          hint: liqHint,
+        })}
       </div>
 
-      <div className="card">
+      <div className="paneel">
         <p className="card-title" id="stelsel-label">Welk box 3-stelsel</p>
         <div className="field">
           <div className="seg" role="group" aria-labelledby="stelsel-label">

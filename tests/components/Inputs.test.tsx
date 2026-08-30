@@ -163,4 +163,31 @@ describe("Inputs", () => {
       expect.objectContaining({ inlegText: "750" }),
     );
   });
+
+  it("verhoogt het vermogen met één sliderstap via de plusknop", () => {
+    const { onChange } = setup();
+    fireEvent.click(screen.getByRole("button", { name: "Vermogen nu verhogen" }));
+    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ V: 205_000 }));
+  });
+
+  it("verlaagt de horizon met één jaar via de minknop", () => {
+    const { onChange } = setup();
+    fireEvent.click(screen.getByRole("button", { name: "Horizon verlagen" }));
+    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ T: 19 }));
+  });
+
+  it("klemt de stepper op het slidermaximum", () => {
+    const { onChange } = setup({ V: 2_000_000 });
+    const plus = screen.getByRole("button", { name: "Vermogen nu verhogen" });
+    if (!(plus instanceof HTMLButtonElement)) throw new Error("geen button");
+    expect(plus.disabled).toBe(true);
+    fireEvent.click(plus);
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("stept het rendement met een tiende procent", () => {
+    const { onChange } = setup();
+    fireEvent.click(screen.getByRole("button", { name: "Rendement per jaar verhogen" }));
+    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ rendPct: 7.1 }));
+  });
 });
