@@ -5,6 +5,7 @@ import { kort } from "../model/format";
 import type { Inputs, Stelsel } from "../model/types";
 import { Label, labelBreedte } from "./chart/Label";
 import { yTicks } from "./chart/axis";
+import { KLEUR } from "./chart/kleuren";
 
 interface Props {
   inputs: Inputs;
@@ -105,8 +106,8 @@ export function TimeChart({ inputs, stelsel }: Props) {
         role="img"
         aria-label="Grafiek: het verschil tussen de BV en box 3 per jaar, met het jaar waarin de BV de achterstand inhaalt"
       >
-        <path d={vlak(true)} fill="rgba(184,134,11,.16)" />
-        <path d={vlak(false)} fill="rgba(47,111,143,.13)" />
+        <path d={vlak(true)} fill={KLEUR.vlakBv} />
+        <path d={vlak(false)} fill={KLEUR.vlakBox3} />
 
         {yTicks(ymin, ymax).map((yv) =>
           yv === 0 ? null : (
@@ -125,8 +126,8 @@ export function TimeChart({ inputs, stelsel }: Props) {
             overlappende stip valt — zie de toelichting daar. */}
         {!smal && (
           <>
-            <Label x={M.l + 6} y={y0 - 7} text="↑ BV staat voor" color="#8a6708" narrow={false} />
-            <Label x={M.l + 6} y={y0 + 16} text="↓ BV staat achter" color="#2f6f8f" narrow={false} />
+            <Label x={M.l + 6} y={y0 - 7} text="↑ BV staat voor" color={KLEUR.bvTekst} narrow={false} />
+            <Label x={M.l + 6} y={y0 + 16} text="↓ BV staat achter" color={KLEUR.box3Zacht} narrow={false} />
           </>
         )}
 
@@ -137,24 +138,24 @@ export function TimeChart({ inputs, stelsel }: Props) {
         ))}
         <text
           x={(M.l + W - M.r) / 2} y={H - M.b + (smal ? 50 : 34)}
-          className="axb" textAnchor="middle" fill="#5b6470"
+          className="axb" textAnchor="middle" fill={KLEUR.mut}
         >
           jaren dat je het volhoudt
         </text>
 
-        <path d={lijn} fill="none" stroke="#b8860b" strokeWidth={2.6} />
+        <path d={lijn} fill="none" stroke={KLEUR.bv} strokeWidth={2.6} />
 
         {omslag !== null && (
           <>
             <path
               d={`M ${X(omslag)} ${M.t} L ${X(omslag)} ${H - M.b}`}
-              fill="none" stroke="#6f3ea8" strokeWidth={1.5} strokeDasharray="4 3"
+              fill="none" stroke={KLEUR.pivotLijn} strokeWidth={1.5} strokeDasharray="4 3"
             />
             <Label
               x={X(omslag) + (omslagRechts ? 7 : -7)}
               y={M.t + 2}
               text={omslagTekst}
-              color="#6f3ea8"
+              color={KLEUR.pivotTekst}
               anchor={omslagRechts ? "start" : "end"}
               narrow={smal}
             />
@@ -163,10 +164,10 @@ export function TimeChart({ inputs, stelsel }: Props) {
 
         {dal < 0 && (
           <>
-            <circle cx={X(dalJaar)} cy={Y(dal)} r={4} fill="#2f6f8f" />
+            <circle cx={X(dalJaar)} cy={Y(dal)} r={4} fill={KLEUR.box3} />
             <Label
               x={X(dalJaar)} y={Y(dal) + (smal ? 26 : 20)}
-              text={dalTekst} color="#2f6f8f"
+              text={dalTekst} color={KLEUR.box3Zacht}
               anchor={dalAnchor} narrow={smal}
             />
           </>
@@ -178,8 +179,8 @@ export function TimeChart({ inputs, stelsel }: Props) {
             dwars door de banier-tekst heen steken bij een ondiep dal. */}
         {smal && (
           <>
-            <Label x={M.l + 6} y={y0 - 11} text="↑ BV staat voor" color="#8a6708" narrow />
-            <Label x={M.l + 6} y={y0 + 24} text="↓ BV staat achter" color="#2f6f8f" narrow />
+            <Label x={M.l + 6} y={y0 - 11} text="↑ BV staat voor" color={KLEUR.bvTekst} narrow />
+            <Label x={M.l + 6} y={y0 + 24} text="↓ BV staat achter" color={KLEUR.box3Zacht} narrow />
           </>
         )}
       </svg>

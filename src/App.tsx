@@ -49,29 +49,42 @@ export default function App() {
 
   return (
     <div className="pagina">
-      <p className="eyebrow">Beleggen in de BV of privé · particulier</p>
-      <h1>Vanaf welk vermogen wordt een BV interessant?</h1>
-      <p className="lede">
-        Privé betaal je in box 3 elk jaar belasting over je vermogen — vanaf 2028
-        over je werkelijke rendement, inclusief koerswinst die je nog niet hebt
-        verzilverd. In een BV mag die winst blijven staan tot je verkoopt. Dat
-        uitstel is het hele voordeel, en het moet opwegen tegen de kosten van de
-        BV, tegen het heffingsvrije bedrag dat je in box 3 opgeeft, en tegen de
-        box 2-heffing bij het uitkeren. Vul je eigen cijfers in en je ziet waar de
-        balans omslaat.
-      </p>
+      <header className="masthead">
+        <div className="masthead-boven">
+          <p className="eyebrow">Beleggen in de BV of privé · particulier</p>
+          <p className="masthead-meta">
+            Rekenmodel · peiljaar 2026 ·{" "}
+            <a href="https://github.com/tim-brand/spaarbv-tool">broncode op GitHub</a>
+          </p>
+        </div>
+        <h1>Vanaf welk vermogen wordt een BV interessant?</h1>
+      </header>
 
       <div className="grid">
-        <div>
+        <div className="paneel-kolom">
           <InputsPanel form={form} onChange={setForm} liqHint={liqHint} />
         </div>
-        <div>
+        <div className="inhoud-kolom">
+          <p className="lede">
+            Privé betaal je in box 3 elk jaar belasting over je vermogen — vanaf 2028
+            over je werkelijke rendement, inclusief koerswinst die je nog niet hebt
+            verzilverd. In een BV mag die winst blijven staan tot je verkoopt. Dat
+            uitstel is het hele voordeel, en het moet opwegen tegen de kosten van de
+            BV, tegen het heffingsvrije bedrag dat je in box 3 opgeeft, en tegen de
+            box 2-heffing bij het uitkeren. Vul je eigen cijfers in en je ziet waar de
+            balans omslaat.
+          </p>
           <Verdict inputs={inputs} stelsel={form.stelsel} bands={bands} />
           <WhyFold inputs={inputs} stelsel={form.stelsel} bands={bands} />
           <BreakevenChart inputs={inputs} stelsel={form.stelsel} bands={bands} />
           <YearTable inputs={inputs} stelsel={form.stelsel} />
           <TimeChart inputs={inputs} stelsel={form.stelsel} />
           <Assumptions inleg={inputs.inleg} />
+          <div className="voetnoten">
+            <span>① Geen advies — een rekenmodel met jouw aannames.</span>
+            <span>② Alle aannames en broncode staan open.</span>
+            <span>③ Wetgeving 2028 is nog een wetsvoorstel.</span>
+          </div>
           <p className="foot">Rekenmodel · indicatief · peiljaar 2026</p>
         </div>
       </div>

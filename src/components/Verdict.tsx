@@ -48,13 +48,14 @@ export function Verdict({ inputs, stelsel, bands }: Props) {
 
   return (
     <div className="card verdict">
-      <p className="kp-label">
+      <p className="kp-label">Uitkomst bij jouw cijfers</p>
+      <p className="kp-voorloop">
         {onder === null
           ? "In dit scenario loont een BV"
-          : `Een BV loont ${stelsel === "2028" ? "(nieuw stelsel)" : "(huidig stelsel)"}`}
+          : `Een BV loont ${stelsel === "2028" ? "(nieuw stelsel)" : "(huidig stelsel)"} vanaf`}
       </p>
       <p className={onder === null ? "kp none" : "kp"}>
-        {onder === null ? "bij geen enkel vermogen" : `vanaf ${eur(onder)}`}
+        {onder === null ? "bij geen enkel vermogen" : eur(onder)}
       </p>
 
       <p className="kp-sub">

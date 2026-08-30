@@ -116,4 +116,14 @@ describe("Verdict", () => {
     paneel();
     expect(document.body.textContent ?? "").not.toContain("per maand");
   });
+
+  it("zet het kantelpuntbedrag alleen op de posterregel", () => {
+    paneel();
+    const held = document.querySelector(".kp");
+    expect(held?.textContent).toContain("490.469");
+    expect(held?.textContent).not.toContain("vanaf");
+    expect(document.querySelector(".kp-voorloop")?.textContent).toContain(
+      "Een BV loont",
+    );
+  });
 });

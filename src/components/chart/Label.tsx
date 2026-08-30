@@ -1,3 +1,5 @@
+import { KLEUR } from "./kleuren";
+
 interface Props {
   x: number;
   y: number;
@@ -38,7 +40,7 @@ export function Label({ x, y, text, color, anchor = "start", narrow }: Props) {
     <>
       <rect
         x={plaatX} y={plaatY} width={breedte} height={hoogte}
-        fill="#ffffff" opacity={0.86} rx={2}
+        fill={KLEUR.plaat} opacity={0.86} rx={2}
       />
       <text x={x} y={y} className="axb" textAnchor={anchor} fill={color}>
         {text}
