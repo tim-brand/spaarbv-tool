@@ -66,7 +66,7 @@ h1 {
 .inhoud-kolom { grid-area: inhoud; }
 @media (min-width: 1000px) {
   .grid { grid-template-columns: minmax(0, 1fr) 400px; grid-template-areas: "inhoud paneel"; gap: 48px; }
-  .paneel-kolom { position: sticky; top: 16px; }
+  .paneel-kolom { position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow-y: auto; }
 }
 
 /* Kaarten: vlakke krantpanelen */
@@ -93,7 +93,6 @@ h1 {
   letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2);
   border-top: 2px solid var(--ink); padding-top: 10px; display: block;
 }
-.field .val { float: right; font-family: var(--display); font-weight: 700; color: var(--ink); text-transform: none; letter-spacing: 0; font-size: 14px; }
 .hint { font-family: var(--labels); font-size: 12px; color: var(--ink-2); margin: 6px 0 0; line-height: 1.5; }
 
 /* Stepper: − waarde + boven de slider */

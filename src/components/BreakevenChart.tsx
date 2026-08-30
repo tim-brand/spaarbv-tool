@@ -226,8 +226,9 @@ export function BreakevenChart({ inputs, stelsel, bands }: Props) {
 
       <p className="chart-note">
         Lees de grafiek zo: schuif over de horizontale as naar jouw vermogen, en
-        de gouden lijn zegt hoeveel je aan het eind méér of minder overhoudt als
-        je dat bedrag via een BV belegt in plaats van privé. Het is dus een{" "}
+        de doorgetrokken donkerblauwe lijn zegt hoeveel je aan het eind méér of
+        minder overhoudt als je dat bedrag via een BV belegt in plaats van
+        privé. Het is dus een{" "}
         <b>verschil</b>, geen vermogen. De zwarte stip staat op jouw vermogen; het
         bedrag ernaast is wat je daar wint of verliest — niet je afstand tot het
         kantelpunt.{" "}
@@ -238,8 +239,8 @@ export function BreakevenChart({ inputs, stelsel, bands }: Props) {
             zwaarder wegen dan het uitstel.{" "}
           </>
         )}
-        De gestippelde blauwe lijn is dezelfde vergelijking tegen het andere box
-        3-stelsel.
+        De gestippelde lichtere lijn is dezelfde vergelijking tegen het andere
+        box 3-stelsel.
       </p>
     </div>
   );
