@@ -4,6 +4,7 @@ import { kort } from "../model/format";
 import type { Band, Inputs, Stelsel } from "../model/types";
 import { Label, labelBreedte } from "./chart/Label";
 import { yTicks } from "./chart/axis";
+import { KLEUR } from "./chart/kleuren";
 
 interface Props {
   inputs: Inputs;
@@ -109,8 +110,8 @@ export function BreakevenChart({ inputs, stelsel, bands }: Props) {
         role="img"
         aria-label="Grafiek: het kantelpunt — het verschil in netto eindvermogen tussen de BV en box 3, afgezet tegen het startvermogen"
       >
-        <path d={vlak(ptsA, true)} fill="rgba(184,134,11,.16)" />
-        <path d={vlak(ptsA, false)} fill="rgba(47,111,143,.13)" />
+        <path d={vlak(ptsA, true)} fill={KLEUR.vlakBv} />
+        <path d={vlak(ptsA, false)} fill={KLEUR.vlakBox3} />
 
         {yTicks(ymin, ymax).map((yv) =>
           yv === 0 ? null : (
@@ -132,12 +133,12 @@ export function BreakevenChart({ inputs, stelsel, bands }: Props) {
         <Label
           x={x0 + 6} y={y0 - (smal ? 11 : 7)}
           text={smal ? "↑ meer via de BV" : "↑ hier houd je meer over via de BV"}
-          color="#8a6708" narrow={smal}
+          color={KLEUR.bvTekst} narrow={smal}
         />
         <Label
           x={x0 + 6} y={y0 + (smal ? 24 : 16)}
           text={smal ? "↓ meer in box 3" : "↓ hier houd je meer over in box 3"}
-          color="#2f6f8f" narrow={smal}
+          color={KLEUR.box3Zacht} narrow={smal}
         />
 
         {labelTicks.map((t) => (
@@ -147,24 +148,24 @@ export function BreakevenChart({ inputs, stelsel, bands }: Props) {
         ))}
         <text
           x={(x0 + x1) / 2} y={H - M.b + (smal ? 52 : 36)}
-          className="axb" textAnchor="middle" fill="#5b6470"
+          className="axb" textAnchor="middle" fill={KLEUR.mut}
         >
           vermogen waarmee je begint
         </text>
 
-        <path d={lijn(ptsB)} fill="none" stroke="rgba(47,111,143,.45)" strokeWidth={1.8} strokeDasharray="5 4" />
-        <path d={lijn(ptsA)} fill="none" stroke="#b8860b" strokeWidth={2.6} />
+        <path d={lijn(ptsB)} fill="none" stroke={KLEUR.box3Lijn2} strokeWidth={1.8} strokeDasharray="5 4" />
+        <path d={lijn(ptsA)} fill="none" stroke={KLEUR.bv} strokeWidth={2.6} />
 
         {eindA !== undefined && eindB !== undefined && (
           smal ? (
             <>
-              <Label x={x1} y={Y(eindA[1]) - 12} text={naam[stelsel]} color="#8a6708" anchor="end" narrow />
-              <Label x={x1} y={Y(eindB[1]) - 12} text={naam[ander]} color="rgba(47,111,143,.95)" anchor="end" narrow />
+              <Label x={x1} y={Y(eindA[1]) - 12} text={naam[stelsel]} color={KLEUR.bvTekst} anchor="end" narrow />
+              <Label x={x1} y={Y(eindB[1]) - 12} text={naam[ander]} color={KLEUR.box3Zacht} anchor="end" narrow />
             </>
           ) : (
             <>
-              <text x={x1 + 7} y={Y(eindA[1]) + 3.5} className="axb" fill="#8a6708">{naam[stelsel]}</text>
-              <text x={x1 + 7} y={Y(eindB[1]) + 3.5} className="axb" fill="rgba(47,111,143,.85)">{naam[ander]}</text>
+              <text x={x1 + 7} y={Y(eindA[1]) + 3.5} className="axb" fill={KLEUR.bvTekst}>{naam[stelsel]}</text>
+              <text x={x1 + 7} y={Y(eindB[1]) + 3.5} className="axb" fill={KLEUR.box3Zacht}>{naam[ander]}</text>
             </>
           )
         )}
@@ -178,13 +179,13 @@ export function BreakevenChart({ inputs, stelsel, bands }: Props) {
             <>
               <path
                 d={`M ${X(band.from)} ${M.t} L ${X(band.from)} ${H - M.b}`}
-                fill="none" stroke="#6f3ea8" strokeWidth={1.5} strokeDasharray="4 3"
+                fill="none" stroke={KLEUR.pivotLijn} strokeWidth={1.5} strokeDasharray="4 3"
               />
               <Label
                 x={X(band.from) + (kantelRechts ? 7 : -7)}
                 y={M.t - (smal ? 10 : 0) + 2}
                 text={kantelTekst}
-                color="#6f3ea8"
+                color={KLEUR.pivotTekst}
                 anchor={kantelRechts ? "start" : "end"}
                 narrow={smal}
               />
@@ -196,19 +197,19 @@ export function BreakevenChart({ inputs, stelsel, bands }: Props) {
           <>
             <path
               d={`M ${X(band.to)} ${M.t} L ${X(band.to)} ${H - M.b}`}
-              fill="none" stroke="#6f3ea8" strokeWidth={1.2} strokeDasharray="2 4"
+              fill="none" stroke={KLEUR.pivotLijn} strokeWidth={1.2} strokeDasharray="2 4"
             />
-            <Label x={X(band.to) - 7} y={M.t + 2} text={`en tot ${kort(band.to)}`} color="#6f3ea8" anchor="end" narrow={smal} />
+            <Label x={X(band.to) - 7} y={M.t + 2} text={`en tot ${kort(band.to)}`} color={KLEUR.pivotTekst} anchor="end" narrow={smal} />
           </>
         )}
 
         {toonStip && (
           <>
-            <circle cx={stipX} cy={stipY} r={5} fill="#161a20" />
+            <circle cx={stipX} cy={stipY} r={5} fill={KLEUR.ink} />
             <Label
               x={stipX} y={stipY + (eigenDelta >= 0 ? (smal ? -20 : -14) : (smal ? 34 : 26))}
               text={jijTekst}
-              color="#161a20" anchor={stipAnchor} narrow={smal}
+              color={KLEUR.ink} anchor={stipAnchor} narrow={smal}
             />
           </>
         )}
