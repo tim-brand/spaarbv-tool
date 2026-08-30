@@ -77,4 +77,17 @@ describe("styles.css - voorpagina-ontwerptaal", () => {
     expect(css).toMatch(/\.grid\s*{[^}]*grid-template-areas/);
     expect(css).toMatch(/\.paneel-kolom\s*{[^}]*position:\s*sticky/);
   });
+
+  // `overflow-x: hidden` maakt van .pagina een scrollcontainer: de andere as
+  // wordt dan `auto` in plaats van `visible`. Een `position: sticky`-kind
+  // plakt vervolgens aan díe scrollport en niet aan het venster, en omdat
+  // .pagina zelf nooit scrolt plakt het paneel dus nergens aan — het schuift
+  // gewoon mee de pagina uit. In Chrome gemeten: het paneel bewoog 1:1 met
+  // window.scrollY en was na ~2300px volledig uit beeld. `overflow-x: clip`
+  // knipt horizontaal net zo goed af, maar maakt géén scrollcontainer.
+  it("knipt horizontaal met clip, zodat sticky blijft werken", () => {
+    const pagina = css.match(/\.pagina\s*{[^}]*}/g)?.join("\n") ?? "";
+    expect(pagina).toContain("overflow-x: clip");
+    expect(pagina).not.toContain("overflow-x: hidden");
+  });
 });

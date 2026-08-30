@@ -30,7 +30,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-.pagina { overflow-x: hidden; max-width: 100%; padding: 28px 28px 26px; }
+/* `clip` en niet `hidden`: hidden zet de andere as op `auto` en maakt van
+   .pagina een scrollcontainer, waardoor het sticky rekenpaneel aan díe
+   scrollport plakt in plaats van aan het venster — en dus nergens aan. */
+.pagina { overflow-x: clip; max-width: 100%; padding: 28px 28px 26px; }
 @media (min-width: 1000px) { .pagina { padding: 36px 56px 40px; } }
 
 /* Masthead — krantenkop met dubbele regel eronder */
